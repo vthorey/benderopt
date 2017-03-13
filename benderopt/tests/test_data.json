@@ -1,0 +1,863 @@
+{
+  "parameters": [
+    {
+      "category": "categorical",
+      "name": "optimizer",
+      "scope": [
+        "sgd",
+        "adam"
+      ]
+    },
+    {
+      "category": "categorical",
+      "name": "activation",
+      "scope": [
+        "relu",
+        "sigmoid"
+      ]
+    },
+    {
+      "category": "uniform",
+      "name": "size_1",
+      "scope": {
+        "max": 5000,
+        "min": 1,
+        "step": 1
+      }
+    }
+  ],
+  "trials": [
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 4631
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 4631
+      }
+    },
+    {
+      "loss": 0.19999999999999996,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 4631
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 4631
+      }
+    },
+    {
+      "loss": 0.30000000000000004,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2966
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2966
+      }
+    },
+    {
+      "loss": 0.18000000000000005,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2966
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2966
+      }
+    },
+    {
+      "loss": 0.8200000000000001,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 62
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 62
+      }
+    },
+    {
+      "loss": 0.6599999999999999,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 62
+      }
+    },
+    {
+      "loss": 0.43999999999999995,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 62
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 422
+      }
+    },
+    {
+      "loss": 0.48,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 422
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 422
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 422
+      }
+    },
+    {
+      "loss": 0.4,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2533
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2533
+      }
+    },
+    {
+      "loss": 0.30000000000000004,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2533
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2533
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 1637
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 1637
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 1637
+      }
+    },
+    {
+      "loss": 0.33999999999999997,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 1637
+      }
+    },
+    {
+      "loss": 0.28,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2527
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2527
+      }
+    },
+    {
+      "loss": 0.31999999999999995,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2527
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2527
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 905
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 905
+      }
+    },
+    {
+      "loss": 0.33999999999999997,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 905
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 905
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2274
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2274
+      }
+    },
+    {
+      "loss": 0.12,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2274
+      }
+    },
+    {
+      "loss": 0.31999999999999995,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2274
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 1424
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 1424
+      }
+    },
+    {
+      "loss": 0.33999999999999997,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 1424
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 1424
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 4720
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 4720
+      }
+    },
+    {
+      "loss": 0.24,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 4720
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 4720
+      }
+    },
+    {
+      "loss": 0.18000000000000005,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2874
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2874
+      }
+    },
+    {
+      "loss": 0.040000000000000036,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2874
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2874
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 4068
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 4068
+      }
+    },
+    {
+      "loss": 0.31999999999999995,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 4068
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 4068
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2986
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2986
+      }
+    },
+    {
+      "loss": 0.19999999999999996,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2986
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2986
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2610
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2610
+      }
+    },
+    {
+      "loss": 0.16000000000000003,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2610
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2610
+      }
+    },
+    {
+      "loss": 0.24,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 4114
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 4114
+      }
+    },
+    {
+      "loss": 0.16000000000000003,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 4114
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 4114
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 4676
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 4676
+      }
+    },
+    {
+      "loss": 0.06000000000000005,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 4676
+      }
+    },
+    {
+      "loss": 0.33999999999999997,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 4676
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 3764
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 3764
+      }
+    },
+    {
+      "loss": 0.040000000000000036,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 3764
+      }
+    },
+    {
+      "loss": 0.19999999999999996,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 3764
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2088
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2088
+      }
+    },
+    {
+      "loss": 0.06000000000000005,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2088
+      }
+    },
+    {
+      "loss": 0.24,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2088
+      }
+    },
+    {
+      "loss": 0.30000000000000004,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 1386
+      }
+    },
+    {
+      "loss": 0.30000000000000004,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 1386
+      }
+    },
+    {
+      "loss": 0.33999999999999997,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 1386
+      }
+    },
+    {
+      "loss": 0.33999999999999997,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 1386
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 1816
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 1816
+      }
+    },
+    {
+      "loss": 0.06000000000000005,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 1816
+      }
+    },
+    {
+      "loss": 0.26,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 1816
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 3866
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 3866
+      }
+    },
+    {
+      "loss": 0.24,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 3866
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 3866
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 2640
+      }
+    },
+    {
+      "loss": 0.72,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 2640
+      }
+    },
+    {
+      "loss": 0.18000000000000005,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 2640
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 2640
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 4589
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 4589
+      }
+    },
+    {
+      "loss": 0.09999999999999998,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 4589
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 4589
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 1671
+      }
+    },
+    {
+      "loss": 0.64,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 1671
+      }
+    },
+    {
+      "loss": 0.24,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 1671
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 1671
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "adam",
+        "size_1": 378
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "sigmoid",
+        "optimizer": "sgd",
+        "size_1": 378
+      }
+    },
+    {
+      "loss": 0.36,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "adam",
+        "size_1": 378
+      }
+    },
+    {
+      "loss": 0.31999999999999995,
+      "parameters": {
+        "activation": "relu",
+        "optimizer": "sgd",
+        "size_1": 378
+      }
+    }
+  ]
+}
