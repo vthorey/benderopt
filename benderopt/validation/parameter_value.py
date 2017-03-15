@@ -15,9 +15,9 @@ def validate_normal(value, search_space):
 
 def validate_uniform(value, search_space):
     test = True
-    if value < search_space["min"]:
+    if value < search_space["low"]:
         test = False
-    elif value > search_space["max"]:
+    elif value > search_space["high"]:
         test = False
 
     return test

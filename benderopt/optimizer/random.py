@@ -1,5 +1,5 @@
 from ..base import BaseOptimizer
-from ..utils_stats import sample_generators
+from ..stats import sample_generators
 
 
 class RandomOptimizer(BaseOptimizer):

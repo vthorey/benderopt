@@ -7,6 +7,7 @@ def get_test_optimization_problem():
         os.path.dirname(os.path.abspath(__file__))))
 
 
+# Useless and probably wrong.
 def get_number_of_possibility(parameters):
     number_of_possibility = None
     for parameter in parameters:

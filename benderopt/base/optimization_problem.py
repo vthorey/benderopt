@@ -32,7 +32,7 @@ class OptimizationProblem:
 
      * from a list of Parameter instance
     parameter1 = Parameter(name="param1", category="categorical", search_space={"values": ["a", "b"]})
-    parameter1 = Parameter(name="param2", category="uniform", search_space={"min": 1, "max": 2})
+    parameter1 = Parameter(name="param2", category="uniform", search_space={"low": 1, "high": 2})
     optimization_problem = OptimizationProblem([parameter1, parameter2])
 
     How to add a observation

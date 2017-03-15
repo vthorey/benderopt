@@ -1,18 +1,19 @@
 import numpy as np
 from ..base import BaseOptimizer
-from ..utils_stats import sample_generators, categorical_logpdf, gaussian_mixture_logpdf
+from ..stats import sample_generators, categorical_logpdf, gaussian_mixture_logpdf
 
 
-class TPEManagerUsingGaussianMixture:
+class PosteriorSearchSpaceUsingGaussianMixture:
     def __init__(self, search_space, parameters_value, prior_mu, prior_sigma):
         self.search_space = search_space
         self.parameters_value = parameters_value
         self.mus = np.sort(parameters_value + [prior_mu])
+
         # Trick to get for each mu the greater distance from left and right neighbor
-        # when min and max are not defined we use inf to get the only available distance
+        # when low and high are not defined we use inf to get the only available distance
         # (right neighbor for sigmas[0] and left for sigmas[-1])
         tmp = np.concatenate(
-            ([search_space.get("min", np.inf)], self.mus, [search_space.get("min", -np.inf)],)
+            ([search_space.get("low", np.inf)], self.mus, [search_space.get("high", -np.inf)],)
         )
         self.sigmas = np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1])
 
@@ -28,8 +29,8 @@ class TPEManagerUsingGaussianMixture:
         return sample_generators["gaussian_mixture"](mus=self.mus,
                                                      sigmas=self.sigmas,
                                                      weights=None,
-                                                     min=self.search_space.get("min"),
-                                                     max=self.search_space.get("max"),
+                                                     low=self.search_space.get("low"),
+                                                     high=self.search_space.get("high"),
                                                      log=self.search_space.get("log"),
                                                      step=self.search_space.get("step"),
                                                      size=size,
@@ -40,31 +41,31 @@ class TPEManagerUsingGaussianMixture:
                                        mus=self.mus,
                                        sigmas=self.sigmas,
                                        weights=None,
-                                       min=self.search_space.get("min"),
-                                       max=self.search_space.get("max"),
+                                       low=self.search_space.get("low"),
+                                       high=self.search_space.get("high"),
                                        log=self.search_space.get("log"),
                                        step=self.search_space.get("step"))
 
 
-class TPEManagerUniform(TPEManagerUsingGaussianMixture):
+class PosteriorSearchSpaceUniform(PosteriorSearchSpaceUsingGaussianMixture):
     def __init__(self, search_space, parameters_value):
-        super(TPEManagerUniform, self).__init__(
+        super(PosteriorSearchSpaceUniform, self).__init__(
             search_space=search_space,
             parameters_value=parameters_value,
-            prior_mu=0.5 * (search_space["max"] + search_space["min"]),
-            prior_sigma=(search_space["max"] - search_space["min"]))
+            prior_mu=0.5 * (search_space["high"] + search_space["low"]),
+            prior_sigma=(search_space["high"] - search_space["low"]))
 
 
-class TPEManagerNormal(TPEManagerUsingGaussianMixture):
+class PosteriorSearchSpaceNormal(PosteriorSearchSpaceUsingGaussianMixture):
     def __init__(self, search_space, parameters_value):
-        super(TPEManagerNormal, self).__init__(
+        super(PosteriorSearchSpaceNormal, self).__init__(
             search_space=search_space,
             parameters_value=parameters_value,
             prior_mu=search_space["mu"],
             prior_sigma=search_space["sigma"])
 
 
-class TPEManagerCategorical:
+class PosteriorSearchSpaceCategorical:
     def __init__(self, search_space, parameter_values):
         self.values = search_space["values"]
         number_of_values = len(self.values)
@@ -85,10 +86,10 @@ class TPEManagerCategorical:
         return categorical_logpdf(samples=samples, values=self.values, weights=self.posterior_weights)
 
 
-tpe_manager = {
-    "categorical": TPEManagerCategorical,
-    "uniform": TPEManagerUniform,
-    "normal": TPEManagerNormal,
+tpe_posterior_search_space = {
+    "categorical": PosteriorSearchSpaceCategorical,
+    "uniform": PosteriorSearchSpaceUniform,
+    "normal": PosteriorSearchSpaceNormal,
 }
 
 
@@ -112,18 +113,21 @@ class TPE(BaseOptimizer):
         # Build a sample going through every parameters
         sample = {}
         for parameter in self.parameters:
-            manager_l = tpe_manager[parameter.category](parameter.search_space,
-                                                        [observation.sample[parameter.name]
-                                                         for observation in observations_l])
-            manager_g = tpe_manager[parameter.category](parameter.search_space,
-                                                        [observation.sample[parameter.name]
-                                                         for observation in observations_g])
+            posterior_search_space_l = tpe_posterior_search_space[parameter.category](
+                parameter.search_space,
+                [observation.sample[parameter.name]
+                 for observation in observations_l])
+            posterior_search_space_g = tpe_posterior_search_space[parameter.category](
+                parameter.search_space,
+                [observation.sample[parameter.name]
+                 for observation in observations_g])
 
             # Draw candidates from observations_l
-            candidates = manager_l.draw(self.number_of_candidates)
+            candidates = posterior_search_space_l.draw(self.number_of_candidates)
 
             # Evaluate cantidates score according to their proba
-            scores = manager_g.evaluate(candidates) - manager_l.evaluate(candidates)
+            scores = (posterior_search_space_g.evaluate(candidates) -
+                      posterior_search_space_l.evaluate(candidates))
 
             sample[parameter.name] = candidates[np.argmin(scores)]
         return sample
