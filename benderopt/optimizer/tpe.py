@@ -65,14 +65,16 @@ class TPEManagerNormal(TPEManagerUsingGaussianMixture):
 
 
 class TPEManagerCategorical:
-    def __init__(self, search_space, parameters_value):
+    def __init__(self, search_space, parameter_values):
         self.values = search_space["values"]
         number_of_values = len(self.values)
         prior_weights = np.array(search_space.get("weights",
                                                   np.ones(number_of_values) / number_of_values))
-        observed_weights = np.array([parameters_value.count(value) for value in self.values])
-        observed_weights = observed_weights / np.sum(observed_weights)
-        self.posterior_weights = (prior_weights + observed_weights) / 2
+        self.posterior_weights = prior_weights
+        if len(parameter_values) != 0:
+            observed_weights = np.array([parameter_values.count(value) for value in self.values])
+            observed_weights = observed_weights / np.sum(observed_weights)
+            self.posterior_weights = (self.posterior_weights + observed_weights) / 2
 
     def draw(self, size):
         return sample_generators["categorical"](values=self.values,
@@ -104,7 +106,8 @@ class TPE(BaseOptimizer):
     def _generate_sample(self):
         # Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
-        observations_l, observations_g = self.optimization_problem.observations_quantile(self.gamma)
+        observations_l, observations_g = self.optimization_problem.observations_quantile(
+            self.gamma)
 
         # Build a sample going through every parameters
         sample = {}
