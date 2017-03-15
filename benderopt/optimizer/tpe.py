@@ -1,6 +1,6 @@
 import numpy as np
 from ..base import BaseOptimizer
-from ..utils_stats import sample_generators
+from ..utils_stats import sample_generators, categorical_logpdf, gaussian_mixture_logpdf
 
 
 class TPEManagerUsingGaussianMixture:
@@ -24,18 +24,26 @@ class TPEManagerUsingGaussianMixture:
         # Fix prior sigma with correct value
         self.sigmas[np.where(self.mus == prior_mu)[0]] = prior_sigma
 
-    def draw(self):
+    def draw(self, size):
         return sample_generators["gaussian_mixture"](mus=self.mus,
                                                      sigmas=self.sigmas,
-                                                     weights=None,  # Todo weight update ?
+                                                     weights=None,
                                                      min=self.search_space.get("min"),
                                                      max=self.search_space.get("max"),
                                                      log=self.search_space.get("log"),
                                                      step=self.search_space.get("step"),
+                                                     size=size,
                                                      max_retry=50)
 
-    def evaluate(self):
-        pass
+    def evaluate(self, samples):
+        return gaussian_mixture_logpdf(samples=samples,
+                                       mus=self.mus,
+                                       sigmas=self.sigmas,
+                                       weights=None,
+                                       min=self.search_space.get("min"),
+                                       max=self.search_space.get("max"),
+                                       log=self.search_space.get("log"),
+                                       step=self.search_space.get("step"))
 
 
 class TPEManagerUniform(TPEManagerUsingGaussianMixture):
@@ -47,9 +55,9 @@ class TPEManagerUniform(TPEManagerUsingGaussianMixture):
             prior_sigma=(search_space["max"] - search_space["min"]))
 
 
-class TPEManagerNormal:
+class TPEManagerNormal(TPEManagerUsingGaussianMixture):
     def __init__(self, search_space, parameters_value):
-        super(TPEManagerUniform, self).__init__(
+        super(TPEManagerNormal, self).__init__(
             search_space=search_space,
             parameters_value=parameters_value,
             prior_mu=search_space["mu"],
@@ -66,12 +74,13 @@ class TPEManagerCategorical:
         observed_weights = observed_weights / np.sum(observed_weights)
         self.posterior_weights = (prior_weights + observed_weights) / 2
 
-    def draw(self):
-        return sample_generators["categorical"](self.values,
-                                                self.posterior_weights)
+    def draw(self, size):
+        return sample_generators["categorical"](values=self.values,
+                                                weights=self.posterior_weights,
+                                                size=size)
 
-    def evaluate(self):
-        pass
+    def evaluate(self, samples):
+        return categorical_logpdf(samples=samples, values=self.values, weights=self.posterior_weights)
 
 
 tpe_manager = {
@@ -86,7 +95,8 @@ class TPE(BaseOptimizer):
     def __init__(self,
                  optimization_problem,
                  gamma=0.15,
-                 number_of_candidates=100):
+                 number_of_candidates=100,
+                 max_retry=5):
         super(TPE, self).__init__(optimization_problem)
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
@@ -110,10 +120,10 @@ class TPE(BaseOptimizer):
             candidates = manager_l.draw(self.number_of_candidates)
 
             # Evaluate cantidates score according to their proba
-            scores = [manager_g.evaluate(candidate) - manager_l.evaluate(candidate)
-                      for candidate in candidates]
+            scores = manager_g.evaluate(candidates) - manager_l.evaluate(candidates)
 
             sample[parameter.name] = candidates[np.argmin(scores)]
+        return sample
 
     def suggest(self):
-        pass
+        return self._generate_sample()

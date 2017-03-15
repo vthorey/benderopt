@@ -103,7 +103,7 @@ class OptimizationProblem:
         return self._sorted_observations
 
     def observations_quantile(self, quantile):
-        size = int(len(self.trials) * quantile)
+        size = int(len(self.observations) * quantile)
         return self.sorted_observations[:size], self.sorted_observations[size:]
 
     def find_observations(self, sample):
