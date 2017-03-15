@@ -1,7 +1,7 @@
-from .normal import generate_samples_normal
+from .normal import generate_samples_normal, normal_pdf
 from .uniform import generate_samples_uniform
-from .categorical import generate_samples_categorical, categorical_logpdf
-from .gaussian_mixture import generate_samples_gaussian_mixture, gaussian_mixture_logpdf
+from .categorical import generate_samples_categorical, categorical_pdf
+from .gaussian_mixture import generate_samples_gaussian_mixture, gaussian_mixture_pdf
 
 sample_generators = {
     "uniform": generate_samples_uniform,
@@ -10,9 +10,14 @@ sample_generators = {
     "gaussian_mixture": generate_samples_gaussian_mixture,
 }
 
+probability_density_function = {
+    "gaussian_mixture": gaussian_mixture_pdf,
+    "categorical": categorical_pdf,
+    "normal": normal_pdf,
+}
+
 
 __all__ = [
     "sample_generators",
-    "gaussian_mixture_logpdf",
-    "categorical_logpdf",
+    "probability_density_function"
 ]

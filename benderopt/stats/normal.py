@@ -5,8 +5,8 @@ from scipy import stats
 
 def generate_samples_normal(mu,
                             sigma,
-                            low=-np.inf,
-                            high=np.inf,
+                            low,
+                            high,
                             log=False,
                             step=None,
                             size=1,
@@ -38,8 +38,8 @@ def generate_samples_normal(mu,
 def normal_cdf(samples,
                mu,
                sigma,
-               low=-np.inf,
-               high=np.inf,
+               low,
+               high,
                log=False):
     """Evaluate (log)(truncated)normal cumulated density function for each samples."""
     distribution = stats.norm if not log else stats.lognorm
@@ -58,8 +58,8 @@ def normal_cdf(samples,
 def normal_pdf(samples,
                mu,
                sigma,
-               low=-np.inf,
-               high=np.inf,
+               low,
+               high,
                log=False,
                step=None):
     """Evaluate (log)(truncated)(discrete)normal probability density function for each sample."""

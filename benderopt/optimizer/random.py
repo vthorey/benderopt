@@ -16,7 +16,7 @@ class RandomOptimizer(BaseOptimizer):
 
     def _generate_sample(self):
         sample = {
-            parameter.name: sample_generators[parameter.category](**parameter.search_space)
+            parameter.name: parameter.draw(1)[0]
             for parameter in self.optimization_problem.parameters
         }
         return sample

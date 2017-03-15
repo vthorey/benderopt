@@ -5,9 +5,9 @@ from .normal import generate_samples_normal, normal_pdf
 
 def generate_samples_gaussian_mixture(mus,
                                       sigmas,
+                                      low,
+                                      high,
                                       weights=None,
-                                      low=-np.inf,
-                                      high=np.inf,
                                       log=False,
                                       step=None,
                                       size=1,
@@ -29,14 +29,14 @@ def generate_samples_gaussian_mixture(mus,
     ])
 
 
-def gaussian_mixture_logpdf(samples,
-                            mus,
-                            sigmas,
-                            weights=None,
-                            low=-np.inf,
-                            high=np.inf,
-                            log=False,
-                            step=None):
+def gaussian_mixture_pdf(samples,
+                         mus,
+                         sigmas,
+                         low,
+                         high,
+                         weights=None,
+                         log=False,
+                         step=None):
     """Evaluate log (log)(truncated)(discrete) gaussian gaussian_mixture probability density
     function for each sample.
     """
@@ -44,14 +44,11 @@ def gaussian_mixture_logpdf(samples,
         weights = np.ones(len(mus)) / len(mus)
 
     # Compute pdf as weighted sum of pdfs for each gaussian
-    pdf = np.sum([normal_pdf(samples,
-                             mu=mu,
-                             sigma=sigma,
-                             low=low,
-                             high=high,
-                             log=log,
-                             step=step) * weight
-                  for mu, sigma, weight in zip(mus, sigmas, weights)], axis=0)
-
-    # return lof_pdf taking care of numerical stability
-    return np.log(np.clip(pdf, a_min=1e-30, a_max=None))
+    return np.sum([normal_pdf(samples,
+                              mu=mu,
+                              sigma=sigma,
+                              low=low,
+                              high=high,
+                              log=log,
+                              step=step) * weight
+                   for mu, sigma, weight in zip(mus, sigmas, weights)], axis=0)
