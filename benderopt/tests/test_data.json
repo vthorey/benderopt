@@ -19,8 +19,8 @@
       "category": "uniform",
       "name": "size_1",
       "search_space": {
-        "max": 5000,
-        "min": 1,
+        "high": 5000,
+        "low": 1,
         "step": 1
       }
     }

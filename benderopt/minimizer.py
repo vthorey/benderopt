@@ -35,18 +35,16 @@ if __name__ == "__main__":
             "search_space": {
                 "mu": np.pi / 2,
                 "sigma": 1,
-                "min": 0,
-                "max": np.pi,
+                "low": 0,
+                "high": np.pi,
             }
         },
         {
             "name": "y",
             "category": "uniform",
             "search_space": {
-                "mu": np.pi / 2,
-                "sigma": 1,
-                "max": 25,
-                "min": 0,
+                "high": 25,
+                "low": 0,
             }
         },
         {
