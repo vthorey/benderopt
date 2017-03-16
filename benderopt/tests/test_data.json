@@ -5,7 +5,7 @@
       "name": "optimizer",
       "search_space": {
         "values": ["sgd", "adam"],
-        "weight": [0.2, 0.8]
+        "probabilities": [0.2, 0.8]
       }
     },
     {

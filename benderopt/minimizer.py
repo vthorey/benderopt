@@ -6,7 +6,7 @@ import time
 
 def minimize(f,
              optimization_problem,
-             optimizer_type="tpe",
+             optimizer_type="parzen_estimator",
              number_of_evaluation=100):
     if type(optimization_problem) == list:
         optimization_problem = OptimizationProblem.from_list(optimization_problem)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
             "category": "categorical",
             "search_space": {
                 "values": ["lol", "lal"],
-                "weights": [0.5, 0.5],
+                "probabilities": [0.5, 0.5],
             }
         }
     ]

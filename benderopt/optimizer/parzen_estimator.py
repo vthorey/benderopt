@@ -1,8 +1,9 @@
 import numpy as np
-from ..base import BaseOptimizer, Parameter
+from ..base import Parameter
+from .optimizer import BaseOptimizer
 
 
-def tpe_build_posterior_parameter(parameter, observations):
+def parzen_estimator_build_posterior_parameter(parameter, observations):
     """TPE algorith transform a prior parameter into a posterior parameters using observations
     to build posterior.
     """
@@ -10,14 +11,15 @@ def tpe_build_posterior_parameter(parameter, observations):
     parameter_values = [observation.sample[parameter.name] for observation in observations]
     search_space = parameter.search_space
     if parameter.category == "categorical":
-        prior_weights = np.array(search_space["weights"])
-        posterior_weights = prior_weights
+        """ TODO Compare mean (current implem) vs hyperopt approach."""
+        prior_probabilities = np.array(search_space["probabilities"])
+        posterior_probabilities = prior_probabilities
         if len(parameter_values) != 0:
-            observed_weights = np.array([parameter_values.count(value)
-                                         for value in search_space["values"]])
-            observed_weights = observed_weights / np.sum(observed_weights)
-            posterior_weights += observed_weights
-            posterior_weights /= sum(posterior_weights)
+            observed_probabilities = np.array([parameter_values.count(value)
+                                               for value in search_space["values"]])
+            observed_probabilities = observed_probabilities / np.sum(observed_probabilities)
+            posterior_probabilities += observed_probabilities
+            posterior_probabilities /= sum(posterior_probabilities)
 
         # Build param
         posterior_parameter = Parameter.from_dict(
@@ -26,7 +28,7 @@ def tpe_build_posterior_parameter(parameter, observations):
                 "category": "categorical",
                 "search_space": {
                     "values": search_space["values"],
-                    "weights": list(posterior_weights),
+                    "probabilities": list(posterior_probabilities),
                 }
             }
         )
@@ -81,29 +83,40 @@ def tpe_build_posterior_parameter(parameter, observations):
     return posterior_parameter
 
 
-class TPE(BaseOptimizer):
+class ParzenEstimator(BaseOptimizer):
 
     def __init__(self,
                  optimization_problem,
                  gamma=0.15,
                  number_of_candidates=100,
-                 max_retry=5):
-        super(TPE, self).__init__(optimization_problem)
+                 max_retry=5,
+                 authorize_duplicate=False,
+                 batch=True,
+                 ):
+        super(ParzenEstimator, self).__init__(optimization_problem,
+                                              authorize_duplicate=True,
+                                              batch=None,
+                                              max_retry=50)
+
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
 
-    def _generate_sample(self):
+    def _generate_samples(self, size):
+        assert size < self.number_of_candidates
+
         # Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
         observations_l, observations_g = self.optimization_problem.observations_quantile(
             self.gamma)
 
         # Build a sample going through every parameters
-        sample = {}
+        samples = [{} for _ in range(size)]
         for parameter in self.parameters:
 
-            posterior_parameter_l = tpe_build_posterior_parameter(parameter, observations_l)
-            posterior_parameter_g = tpe_build_posterior_parameter(parameter, observations_g)
+            posterior_parameter_l = parzen_estimator_build_posterior_parameter(parameter,
+                                                                               observations_l)
+            posterior_parameter_g = parzen_estimator_build_posterior_parameter(parameter,
+                                                                               observations_g)
 
             # Draw candidates from observations_l
             candidates = posterior_parameter_l.draw(self.number_of_candidates)
@@ -113,9 +126,9 @@ class TPE(BaseOptimizer):
                       np.clip(posterior_parameter_l.pdf(candidates),
                               a_min=1e-16,
                               a_max=None))
+            sorted_candidates = candidates[np.argsort(scores)]
 
-            sample[parameter.name] = candidates[np.argmin(scores)]
-        return sample
+            for i in range(size):
+                samples[i][parameter.name] = sorted_candidates[i]
 
-    def suggest(self):
-        return self._generate_sample()
+        return samples
