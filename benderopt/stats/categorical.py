@@ -2,12 +2,12 @@ from numpy import random
 import numpy as np
 
 
-def generate_samples_categorical(values, weights, size=1):
-    """Generate sample for categorical data with probability weights."""
-    return random.choice(values, p=weights, size=size)
+def generate_samples_categorical(values, probabilities, size=1):
+    """Generate sample for categorical data with probability probabilities."""
+    return random.choice(values, p=probabilities, size=size)
 
 
-def categorical_pdf(samples, values, weights):
+def categorical_pdf(samples, values, probabilities):
     """Evaluate categorical log probability density function for each samples."""
-    converter = dict(zip(values, weights))
+    converter = dict(zip(values, probabilities))
     return np.array([converter[value] for value in values])

@@ -1,45 +1,28 @@
-from ..base import BaseOptimizer
-from ..stats import sample_generators
+from .optimizer import BaseOptimizer
 
 
 class RandomOptimizer(BaseOptimizer):
 
     def __init__(self,
                  optimization_problem,
-                 authorize_duplicate=False,
+                 authorize_duplicate=True,
                  batch=None,
                  max_retry=50):
-        super(RandomOptimizer, self).__init__(optimization_problem)
-        self.authorize_duplicate = authorize_duplicate
-        self.batch = batch
-        self.max_retry = max_retry
+        super(RandomOptimizer, self).__init__(optimization_problem,
+                                              authorize_duplicate=True,
+                                              batch=None,
+                                              max_retry=50)
 
-    def _generate_sample(self):
-        sample = {
-            parameter.name: parameter.draw(1)[0]
+    def _generate_samples(self, size):
+        parameters = self.optimization_problem.parameters
+        draws = [
+            parameter.draw(size) if size == 1 else parameter.draw(size)
             for parameter in self.optimization_problem.parameters
-        }
-        return sample
-
-    def _generate_unique_sample(self):
-        unique_sample = None
-        for i in range(self.max_retry):
-            sample = self._generate_sample()
-            if self.sample_exist(sample):
-                unique_sample = sample
-                break
-        return unique_sample
-
-    def suggest(self):
-        results = None
-        if self.batch:
-            if self.authorize_duplicate:
-                results = [self._generate_sample() for _ in range(self.batch)]
-            else:
-                results = [self._generate_unique_sample() for _ in range(self.batch)]
-        else:
-            if self.authorize_duplicate:
-                results = self._generate_sample()
-            else:
-                results = self._generate_unique_sample()
-        return results
+        ]
+        names = [parameter.name for parameter in parameters]
+        return [
+            {
+                names[i]: value
+                for i, value in enumerate(draw)
+            } for draw in zip(*draws)
+        ]

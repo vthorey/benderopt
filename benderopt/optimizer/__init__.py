@@ -1,7 +1,9 @@
 from .random import RandomOptimizer
-from .tpe import TPE
+from .parzen_estimator import ParzenEstimator
+from .optimizer import BaseOptimizer
 
 optimizers = {
+    "base": BaseOptimizer,
     "random": RandomOptimizer,
-    "tpe": TPE,
+    "parzen_estimator": ParzenEstimator,
 }
