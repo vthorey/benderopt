@@ -30,7 +30,7 @@ def generate_samples_normal(mu,
         samples = np.exp(samples)
 
     if step:
-        samples = step * round(samples / step)
+        samples = step * np.round(samples / step)
 
     return samples
 
