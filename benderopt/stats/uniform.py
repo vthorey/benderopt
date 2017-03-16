@@ -10,5 +10,5 @@ def generate_samples_uniform(low, high, log=False, step=None, size=1):
     if log:
         samples = np.exp(samples)
     if step:
-        samples = step * round(samples / step)
+        samples = step * np.round(samples / step)
     return samples
