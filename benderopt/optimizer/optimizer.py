@@ -5,6 +5,8 @@ class BaseOptimizer:
 
     def __init__(self, optimization_problem, authorize_duplicate, batch, max_retry):
         self.optimization_problem = optimization_problem
+        if self.optimization_problem.finite and authorize_duplicate is False:
+            raise ValueError("Finite problem cannot generate unique solutions.")
         self.authorize_duplicate = authorize_duplicate
         self.batch = batch
         self.max_retry = max_retry
