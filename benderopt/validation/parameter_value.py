@@ -11,10 +11,16 @@ def validate_categorical(value, search_space):
 
 def validate_normal(value, search_space):
     test = True
-    if value < search_space.get("low", -np.inf):
-        test = False
-    elif value > search_space.get("high", np.inf):
-        test = False
+    if not search_space.get("log", False):
+        if value < search_space.get("low", -np.inf):
+            test = False
+        elif value > search_space.get("high", np.inf):
+            test = False
+    else:
+        if value < search_space.get("low", -np.inf):
+            test = False
+        elif value > search_space.get("high", np.inf):
+            test = False
     return test
 
 
