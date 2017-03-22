@@ -68,14 +68,22 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
         posterior_parameter = Parameter.from_dict(
             {
                 "name": parameter.name,
-                "category": "gaussian_mixture",
+                "category": "mixture",
                 "search_space": {
-                    "mus": list(mus),
-                    "sigmas": list(sigmas),
-                    "low": search_space["low"],
-                    "high": search_space["high"],
-                    "log": search_space.get("log", False),
-                    "step": search_space.get("step", None)
+                    "parameters": [
+                        {
+                            "category": "normal",
+                            "search_space": {
+                                "mu": mu.tolist(),
+                                "sigma": sigma.tolist(),
+                                "low": search_space["low"],
+                                "high": search_space["high"],
+                                "log": search_space.get("log", False),
+                                "step": search_space.get("step", None)
+                            }
+                        } for mu, sigma in zip(mus, sigmas)
+                    ],
+                    "weights": [1 / len(mus) for _ in range(len(mus))]
                 }
             }
         )
