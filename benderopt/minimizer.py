@@ -1,25 +1,21 @@
 from benderopt.optimizer import optimizers
 from benderopt.base import OptimizationProblem, Observation
 import numpy as np
-import time
 
 
 def minimize(f,
              optimization_problem,
-             optimizer_type="parzen_estimator",
+             optimizer_type="random",
              number_of_evaluation=100):
     if type(optimization_problem) == list:
         optimization_problem = OptimizationProblem.from_list(optimization_problem)
 
     for _ in range(number_of_evaluation):
-        t1 = time.time()
         optimizer = optimizers[optimizer_type](optimization_problem)
         sample = optimizer.suggest()
-        print(sample)
         loss = f(**sample)
         observation = Observation.from_dict({"loss": loss, "sample": sample})
         optimization_problem.add_observation(observation)
-        print(time.time() - t1)
     return optimization_problem.best_sample
 
 

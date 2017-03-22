@@ -103,6 +103,20 @@ class OptimizationProblem:
             self._sorted_observations = sorted(self.observations, key=lambda x: x.loss)
         return self._sorted_observations
 
+    @property
+    def finite(self):
+        """Has the optimization problem infinite solution."""
+        if not hasattr(self, "_finite"):
+            _finite = True
+            for parameter in self.parameters:
+                if parameter.category != "categorical" and "step" not in parameter.search_space.keys():
+                    _finite = False
+                    break
+
+            self._finite = _finite
+
+        return self._finite
+
     def observations_quantile(self, quantile):
         size = int(len(self.observations) * quantile)
         return self.sorted_observations[:size], self.sorted_observations[size:]
