@@ -11,7 +11,7 @@ def validate_categorical(value, values, **kwargs):
 
 def validate_normal(value, low, high, log, **kwargs):
     test = True
-    if "log":
+    if log:
         low = np.exp(low)
         high = np.exp(high)
     if value < low:
@@ -30,7 +30,6 @@ def validate_uniform(value, low, high, log, **kwargs):
         test = False
     elif value > high:
         test = False
-
     return test
 
 

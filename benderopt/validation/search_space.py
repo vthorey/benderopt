@@ -30,6 +30,7 @@ def validate_normal(search_space):
         raise ValueError
 
     elif "mu" not in search_space.keys() or type(search_space["mu"]) not in (int, float):
+        print(search_space)
         raise ValueError
 
     elif "sigma" not in search_space.keys() or type(search_space["sigma"]) not in (int, float):
@@ -61,6 +62,12 @@ def validate_normal(search_space):
     if "low" not in search_space.keys():
         search_space["low"] = -np.inf
 
+    if "log" not in search_space.keys():
+        search_space["log"] = False
+
+    if "step" not in search_space.keys():
+        search_space["step"] = None
+
     return search_space
 
 
@@ -85,6 +92,11 @@ def validate_uniform(search_space):
         if type(search_space["step"]) not in (int, float):
             raise ValueError
 
+    if "log" not in search_space.keys():
+        search_space["log"] = False
+
+    if "step" not in search_space.keys():
+        search_space["step"] = None
     return search_space
 
 
@@ -110,7 +122,7 @@ def validate_mixture(search_space):
         if "search_space" not in parameter.keys() or type(parameter["search_space"]) != dict:
             raise ValueError
 
-        search_space["parameters"][i] = validate_search_space[parameter["category"]](
+        search_space["parameters"][i]["search_space"] = validate_search_space[parameter["category"]](
             parameter["search_space"])
 
     if "weights" not in search_space.keys():

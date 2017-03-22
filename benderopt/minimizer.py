@@ -5,7 +5,7 @@ import numpy as np
 
 def minimize(f,
              optimization_problem,
-             optimizer_type="random",
+             optimizer_type="parzen_estimator",
              number_of_evaluation=100):
     if type(optimization_problem) == list:
         optimization_problem = OptimizationProblem.from_list(optimization_problem)
@@ -20,7 +20,7 @@ def minimize(f,
 
 
 if __name__ == "__main__":
-    def f(x, y, z):
+    def f(x):
         y = np.sin(x)
         return (y - 1) ** 2
 
@@ -33,22 +33,6 @@ if __name__ == "__main__":
                 "sigma": 1,
                 "low": 0,
                 "high": np.pi,
-            }
-        },
-        {
-            "name": "y",
-            "category": "uniform",
-            "search_space": {
-                "high": 25,
-                "low": 0,
-            }
-        },
-        {
-            "name": "z",
-            "category": "categorical",
-            "search_space": {
-                "values": ["lol", "lal"],
-                "probabilities": [0.5, 0.5],
             }
         }
     ]
