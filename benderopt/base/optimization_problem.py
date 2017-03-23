@@ -93,7 +93,7 @@ class OptimizationProblem:
     def best_sample(self):
         sample = None
         if len(self.observations) > 0:
-            sample = self.sorted_observations[0]
+            sample = self.sorted_observations[0].sample
         return sample
 
     @property
