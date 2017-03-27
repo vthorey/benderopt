@@ -13,6 +13,7 @@ def validate_categorical(search_space):
         type(search_space['probabilities']) != list or
         len(search_space['probabilities']) != len(search_space['values']) or
             sum(search_space['probabilities']) != 1):
+        import ipdb; ipdb.set_trace()
         raise ValueError
 
     if "probabilities" not in search_space.keys():

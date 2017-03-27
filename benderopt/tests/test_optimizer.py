@@ -22,7 +22,7 @@ def test_random_uniform():
 
     best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
 
-    assert np.abs(best_sample.sample["x"] - (np.pi / 2)) < 0.1
+    assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1
 
 
 def test_random_normal():
@@ -42,7 +42,7 @@ def test_random_normal():
 
     best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
 
-    assert np.abs(best_sample.sample["x"] - (np.pi / 2)) < 0.1
+    assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1
 
 
 def test_random_categorical():
@@ -59,7 +59,7 @@ def test_random_categorical():
 
     best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
 
-    assert np.abs(best_sample.sample["x"] - (np.pi / 2)) < 1e-5
+    assert np.abs(best_sample["x"] - (np.pi / 2)) < 1e-5
 
 
 def test_random_uniform_step():
@@ -78,23 +78,4 @@ def test_random_uniform_step():
 
     best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
 
-    assert np.abs(best_sample.sample["x"] - (np.pi / 2)) < 0.1
-
-
-def test_random_uniform_step():
-
-    optimization_problem = [
-        {
-            "name": "x",
-            "category": "uniform",
-            "search_space": {
-                "low": 0,
-                "high": np.pi,
-                "log": True,
-            }
-        }
-    ]
-
-    best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
-
-    assert np.abs(best_sample.sample["x"] - (np.pi / 2)) < 0.1
+    assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1

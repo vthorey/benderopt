@@ -145,10 +145,9 @@ class OptimizationProblem:
                 try:
                     observation = Observation.from_dict(observation_data)
                     self.add_observation(observation, raise_exception=raise_exception)
-                except Exception as e:
+                except Exception:
                     if raise_exception:
-                        raise ValueError("{} invalid for a observation".format(observation_data))\
-                            from e
+                        raise ValueError("{} invalid for a observation".format(observation_data))
         else:
             if raise_exception:
                 raise ValueError("Need to give a list of observations")
@@ -174,8 +173,8 @@ class OptimizationProblem:
     @classmethod
     def from_list(cls, parameters_data):
         parameters = []
-        if type(parameters) != list:
-            raise ValueError("parameters must be a list of dict")
+        if type(parameters_data) != list:
+            raise ValueError("parameters_data must be a list of dict")
 
         for parameter_data in parameters_data:
             parameters.append(Parameter.from_dict(parameter_data))

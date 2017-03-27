@@ -37,4 +37,4 @@ if __name__ == "__main__":
         }
     ]
 
-    best_sample = minimize(f, optimization_problem, number_of_evaluation=1000)
+    best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
