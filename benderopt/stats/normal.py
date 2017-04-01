@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import random
 from scipy import stats
 
 
@@ -14,17 +13,8 @@ def generate_samples_normal(mu,
     """Generate sample for (log)(truncated)(discrete)normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
-    samples = np.ones(size) * np.nan
-    nans_locations = np.where(np.isnan(samples))[0]
-    for _ in range(max_retry):
-        samples[nans_locations] = random.normal(loc=mu, scale=sigma, size=len(nans_locations))
-        samples[(samples < low) + (samples > high)] = np.nan
-        nans_locations = np.where(np.isnan(samples))[0]
-        if len(nans_locations) == 0:
-            break
-    else:
-        raise ValueError("No sample could be drawn in given bounds with max_retry {}".format(
-            max_retry))
+    a, b = (low - mu) / sigma, (high - mu) / sigma
+    samples = stats.truncnorm.rvs(a=a, b=b, size=size, loc=mu, scale=sigma)
 
     if log:
         samples = np.exp(samples)
@@ -43,8 +33,7 @@ def normal_cdf(samples,
                log=False):
     """Evaluate (log)(truncated)normal cumulated density function for each samples."""
     distribution = stats.norm if not log else stats.lognorm
-
-    values = distribution.cdf(np.clip(samples, a_min=None, a_max=max), loc=mu, scale=sigma)
+    values = distribution.cdf(np.clip(samples, a_min=None, a_max=high), loc=mu, scale=sigma)
 
     values -= distribution.cdf(low, loc=mu, scale=sigma)
     values = np.clip(values, a_min=0, a_max=None)

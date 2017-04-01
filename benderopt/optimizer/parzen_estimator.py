@@ -19,7 +19,7 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
                                                for value in search_space["values"]])
             observed_probabilities = observed_probabilities / np.sum(observed_probabilities)
             posterior_probabilities += observed_probabilities
-            posterior_probabilities /= sum(posterior_probabilities)
+        posterior_probabilities /= sum(posterior_probabilities)
 
         # Build param
         posterior_parameter = Parameter.from_dict(
