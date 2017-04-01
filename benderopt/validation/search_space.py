@@ -10,11 +10,14 @@ def validate_categorical(search_space):
     elif "values" not in search_space.keys() or type(search_space['values']) != list:
         raise ValueError
     elif "probabilities" in search_space.keys() and (
-        type(search_space['probabilities']) != list or
-        len(search_space['probabilities']) != len(search_space['values']) or
-            sum(search_space['probabilities']) != 1):
-        import ipdb; ipdb.set_trace()
+            type(search_space['probabilities']) != list or
+            len(search_space['probabilities']) != len(search_space['values'])):
         raise ValueError
+
+    # Test that proba sum to 1 but we are lazy and we try directly
+    if "probabilities" in search_space.keys():
+        np.random.choice(range(len(search_space["probabilities"])),
+                         p=search_space["probabilities"])
 
     if "probabilities" not in search_space.keys():
         number_of_values = len(search_space["values"])

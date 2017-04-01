@@ -4,7 +4,7 @@ import numpy as np
 
 def validate_categorical(value, values, **kwargs):
     test = True
-    if value not in value:
+    if value not in values:
         test = False
     return test
 

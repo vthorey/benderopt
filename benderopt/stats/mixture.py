@@ -30,6 +30,6 @@ def generate_samples_mixture(parameters, weights, size):
 
 def mixture_pdf(samples, parameters, weights):
     value = np.sum([probability_density_function_base[parameter["category"]](
-        samples, **parameter["search_space"]) * weight
+        samples=samples, **parameter["search_space"]) * weight
         for parameter, weight in zip(parameters, weights)], axis=0)
     return value
