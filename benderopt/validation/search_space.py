@@ -7,9 +7,9 @@ def validate_categorical(search_space):
 
     if type(search_space) != dict:
         raise ValueError
-    elif "values" not in search_space.keys() or type(search_space['values']) != list:
+    if "values" not in search_space.keys() or type(search_space['values']) != list:
         raise ValueError
-    elif "probabilities" in search_space.keys() and (
+    if "probabilities" in search_space.keys() and (
             type(search_space['probabilities']) != list or
             len(search_space['probabilities']) != len(search_space['values'])):
         raise ValueError
@@ -26,6 +26,60 @@ def validate_categorical(search_space):
     return search_space
 
 
+def check_mu_sigma(search_space):
+    if "mu" not in search_space.keys() or type(search_space["mu"]) not in (int, float):
+        print(search_space)
+        raise ValueError
+
+    if "sigma" not in search_space.keys() or type(search_space["sigma"]) not in (int, float):
+        raise ValueError
+
+
+def check_step(search_space):
+    if "step" in search_space.keys():
+        if type(search_space["step"]) not in (int, float):
+            raise ValueError
+
+
+def set_step(search_space, step=None):
+    search_space = search_space.copy()
+    search_space["step"] = step
+    return search_space
+
+
+def check_low_high(search_space, optional):
+    if not optional:
+        if "low" not in search_space.keys():
+            raise ValueError
+
+        if "high" not in search_space.keys():
+            raise ValueError
+
+    if "low" in search_space.keys():
+        if type(search_space["low"]) not in (int, float):
+            raise ValueError
+
+    if "high" in search_space.keys():
+        if type(search_space["high"]) not in (int, float):
+            raise ValueError
+
+    if "high" in search_space.keys() and "low" in search_space.keys():
+        if search_space["high"] >= search_space["low"]:
+            raise ValueError("low <= high")
+
+
+def set_low_high(search_space, low=-np.inf, high=np.ing):
+    search_space = search_space.copy()
+
+    if "high" not in search_space.keys():
+        search_space["high"] = high
+
+    if "low" not in search_space.keys():
+        search_space["low"] = low
+
+    return search_space
+
+
 def validate_normal(search_space):
     # error = "Expected a type dict with mandatory keys : [mu, sigma] and optional key log  or step"
     search_space = search_space.copy()
@@ -33,44 +87,15 @@ def validate_normal(search_space):
     if type(search_space) != dict:
         raise ValueError
 
-    elif "mu" not in search_space.keys() or type(search_space["mu"]) not in (int, float):
-        print(search_space)
-        raise ValueError
+    check_mu_sigma(search_space)
 
-    elif "sigma" not in search_space.keys() or type(search_space["sigma"]) not in (int, float):
-        raise ValueError
+    check_step(search_space)
 
-    elif "log" in search_space.keys():
-        if type(search_space["log"]) not in (bool,):
-            raise ValueError
+    check_low_high(search_space, optional=True)
 
-    elif "step" in search_space.keys():
-        if type(search_space["step"]) not in (int, float):
-            raise ValueError
+    search_space = set_low_high(search_space)
 
-    elif "low" in search_space.keys():
-        if type(search_space["low"]) not in (int, float):
-            raise ValueError
-
-    elif "high" in search_space.keys():
-        if type(search_space["high"]) not in (int, float):
-            raise ValueError
-
-    elif "high" in search_space.keys() and "low" in search_space.keys():
-        if search_space["high"] >= search_space["low"]:
-            raise ValueError("low <= high")
-
-    if "high" not in search_space.keys():
-        search_space["high"] = np.inf
-
-    if "low" not in search_space.keys():
-        search_space["low"] = -np.inf
-
-    if "log" not in search_space.keys():
-        search_space["log"] = False
-
-    if "step" not in search_space.keys():
-        search_space["step"] = None
+    search_space = set_step(search_space)
 
     return search_space
 
@@ -82,25 +107,45 @@ def validate_uniform(search_space):
     if type(search_space) != dict:
         raise ValueError
 
-    elif "low" not in search_space.keys() or type(search_space["low"]) not in (int, float):
+    check_low_high(search_space, optional=False)
+
+    check_step(search_space)
+
+    search_space = set_step(search_space)
+
+    return search_space
+
+
+def validate_lognormal(search_space):
+    # error = "Expected a type dict with mandatory keys : [mu, sigma] and optional key log  or step"
+    search_space = search_space.copy()
+
+    if type(search_space) != dict:
         raise ValueError
 
-    elif "high" not in search_space.keys() or type(search_space["high"]) not in (int, float):
+    check_mu_sigma(search_space)
+
+    check_step(search_space)
+
+    check_low_high(search_space, optional=True)
+
+    search_space = set_step(search_space)
+
+    return search_space
+
+
+def validate_loguniform(search_space):
+    # error = "Expected a type dict with mandatory keys : [low, high] and optional key [log]"
+    search_space = search_space.copy()
+
+    if type(search_space) != dict:
         raise ValueError
 
-    elif "log" in search_space.keys():
-        if type(search_space["log"]) not in (bool,):
-            raise ValueError
+    check_low_high(search_space, optional=False)
 
-    elif "step" in search_space.keys():
-        if type(search_space["step"]) not in (int, float):
-            raise ValueError
+    check_step(search_space)
 
-    if "log" not in search_space.keys():
-        search_space["log"] = False
-
-    if "step" not in search_space.keys():
-        search_space["step"] = None
+    search_space = set_step(search_space)
     return search_space
 
 
@@ -140,5 +185,7 @@ validate_search_space = {
     "categorical": validate_categorical,
     "normal": validate_normal,
     "uniform": validate_uniform,
+    "lognormal": validate_lognormal,
+    "loguniform": validate_loguniform,
     "mixture": validate_mixture,
 }

@@ -9,11 +9,8 @@ def validate_categorical(value, values, **kwargs):
     return test
 
 
-def validate_normal(value, low, high, log, **kwargs):
+def validate_normal(value, low, high, **kwargs):
     test = True
-    if log:
-        low = np.exp(low)
-        high = np.exp(high)
     if value < low:
         test = False
     elif value > high:
@@ -21,11 +18,30 @@ def validate_normal(value, low, high, log, **kwargs):
     return test
 
 
-def validate_uniform(value, low, high, log, **kwargs):
+def validate_lognormal(value, low, high, **kwargs):
     test = True
-    if log:
-        low = np.exp(low)
-        high = np.exp(high)
+    low = np.exp(low)
+    high = np.exp(high)
+    if value < low:
+        test = False
+    elif value > high:
+        test = False
+    return test
+
+
+def validate_uniform(value, low, high, **kwargs):
+    test = True
+    if value < low:
+        test = False
+    elif value > high:
+        test = False
+    return test
+
+
+def validate_loguniform(value, low, high, **kwargs):
+    test = True
+    low = np.exp(low)
+    high = np.exp(high)
     if value < low:
         test = False
     elif value > high:
@@ -47,5 +63,7 @@ is_parameter_value_valid = {
     "categorical": validate_categorical,
     "normal": validate_normal,
     "uniform": validate_uniform,
+    "lognormal": validate_lognormal,
+    "loguniform": validate_loguniform,
     "mixture": validate_mixture,
 }
