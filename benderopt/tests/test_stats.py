@@ -63,31 +63,7 @@ def test_log_uniform_step_generator():
     assert np.sum(samples % 2) == 0
 
 
-def test_normal_generator():
-    mu = 5
-    sigma = 3
-    data = {
-        'mu': mu,
-        'sigma': sigma,
-        'low': 0,
-        'high': 15,
-        'log': False,
-        'step': None,
-        'size': 1000,
-    }
-    alpha = (data["low"] - mu) / sigma
-    beta = (data["high"] - mu) / sigma
 
-    Z = stats.norm.cdf(beta, loc=mu, scale=sigma)
-
-    mean = mu + sigma * (
-        stats.norm.pdf(alpha, loc=mu, scale=sigma) - stats.norm.pdf(beta, loc=mu, scale=sigma)) / Z
-
-    samples = sample_generators["normal"](**data)
-    assert sum(samples > data["low"]) == data["size"]
-    assert sum(samples < data["high"]) == data["size"]
-    assert np.abs(np.mean(samples) - mean) < 0.1
-    assert np.abs(np.std(samples) - 0.5) < 0.1
 
 
 # def test_log_normal_generator():
