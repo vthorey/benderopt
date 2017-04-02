@@ -7,8 +7,6 @@ def generate_samples_uniform(low, high, log=False, step=None, size=1):
     samples = random.uniform(low=low,
                              high=high,
                              size=size)
-    if log:
-        samples = np.exp(samples)
     if step:
         samples = step * np.round(samples / step)
     return samples
@@ -20,4 +18,6 @@ def uniform_pdf(samples,
                 log=False,
                 step=None):
     """Evaluate (log)(truncated)(discrete)normal probability density function for each sample."""
-    return 1 / (high - low)
+    values = np.ones(len(samples)) * 1 / (high - low)
+    values[samples < low + samples > high] = 0
+    return values
