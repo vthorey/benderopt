@@ -10,7 +10,7 @@ def generate_samples_lognormal(mu,
                                size=1,
                                max_retry=50
                                ):
-    """Generate sample for (log)(truncated)(discrete)normal density."""
+    """Generate sample for (truncated)(discrete)normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
     a, b = (low - mu) / sigma, (high - mu) / sigma
@@ -28,7 +28,7 @@ def lognormal_cdf(samples,
                   low,
                   high,
                   ):
-    """Evaluate (log)(truncated)normal cumulated density function for each samples.
+    """Evaluate (truncated)normal cumulated density function for each samples.
 
     http://mathworld.wolfram.com/GibratsDistribution.html
 
@@ -58,7 +58,7 @@ def lognormal_pdf(samples,
                   high,
                   step=None
                   ):
-    """Evaluate (log)(truncated)(discrete)normal probability density function for each sample."""
+    """Evaluate (truncated)(discrete)normal probability density function for each sample."""
     values = None
     if step is None:
         parametrization = {

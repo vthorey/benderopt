@@ -10,7 +10,7 @@ def generate_samples_normal(mu,
                             size=1,
                             max_retry=50
                             ):
-    """Generate sample for (log)(truncated)(discrete)normal density."""
+    """Generate sample for (truncated)(discrete)normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
     a, b = (low - mu) / sigma, (high - mu) / sigma
@@ -28,7 +28,7 @@ def normal_cdf(samples,
                low,
                high,
                ):
-    """Evaluate (log)(truncated)normal cumulated density function for each samples.
+    """Evaluate (truncated)normal cumulated density function for each samples.
 
     From scipy:
     If X normal, log(X) = Y follow a lognormal dist if s=sigma and scale = exp(mu)
@@ -48,7 +48,7 @@ def normal_pdf(samples,
                low,
                high,
                step=None):
-    """Evaluate (log)(truncated)(discrete)normal probability density function for each sample."""
+    """Evaluate (truncated)(discrete)normal probability density function for each sample."""
     values = None
     if step is None:
         a, b = (low - mu) / sigma, (high - mu) / sigma
