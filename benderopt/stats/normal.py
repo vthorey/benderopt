@@ -31,15 +31,27 @@ def normal_cdf(samples,
                low,
                high,
                log=False):
-    """Evaluate (log)(truncated)normal cumulated density function for each samples."""
-    distribution = stats.norm if not log else stats.lognorm
-    values = distribution.cdf(np.clip(samples, a_min=None, a_max=high), loc=mu, scale=sigma)
+    """Evaluate (log)(truncated)normal cumulated density function for each samples.
 
-    values -= distribution.cdf(low, loc=mu, scale=sigma)
-    values = np.clip(values, a_min=0, a_max=None)
-
-    values /= (distribution.cdf(high, loc=mu, scale=sigma) -
-               distribution.cdf(low, loc=mu, scale=sigma))
+    From scipy:
+    If X normal, log(X) = Y follow a lognormal dist if s=sigma and scale = exp(mu)
+    np.exp(stats.norm.rvs(size=1000000, loc=mu, scale=sigma))
+    is similar to
+    stats.lognorm.rvs(size=1000000, s=sigma, scale=np.exp(mu))
+    """
+    if log is True:
+        parametrization = {
+            's': sigma,
+            'scale': np.exp(mu),
+        }
+        cdf_low = stats.lognorm.cdf(low, **parametrization)
+        cdf_high = stats.lognorm.cdf(high, **parametrization)
+        values = (stats.lognorm.cdf(samples, **parametrization) - cdf_low) / (cdf_high - cdf_low)
+        values[(samples < low)] = 0
+        values[(samples > high)] = 1
+    else:
+        a, b = (low - mu) / sigma, (high - mu) / sigma
+        values = stats.truncnorm.cdf(samples, a=a, b=b, loc=mu, scale=sigma)
 
     return values
 
@@ -54,14 +66,19 @@ def normal_pdf(samples,
     """Evaluate (log)(truncated)(discrete)normal probability density function for each sample."""
     values = None
     if step is None:
-        distribution = stats.norm if not log else stats.lognorm
+        if log is True:
+            parametrization = {
+                's': sigma,
+                'scale': np.exp(mu),
+            }
+            cdf_low = stats.lognorm.cdf(low, **parametrization)
+            cdf_high = stats.lognorm.cdf(high, **parametrization)
+            values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)
+            values[(samples < low) + (samples > high)] = 0
+        else:
+            a, b = (low - mu) / sigma, (high - mu) / sigma
+            values = stats.truncnorm.pdf(samples, a=a, b=b, loc=mu, scale=sigma)
 
-        values = distribution.pdf(samples, loc=mu, scale=sigma)
-
-        # rescale if needed
-        values /= (distribution.cdf(high, loc=mu, scale=sigma) -
-                   distribution.cdf(low, loc=mu, scale=sigma))
-        values[(samples < low) + (samples > high)] = 0
     else:
         values = (normal_cdf(samples + step / 2, mu=mu, sigma=sigma, low=low, high=high, log=log) -
                   normal_cdf(samples - step / 2, mu=mu, sigma=sigma, low=low, high=high, log=log))
