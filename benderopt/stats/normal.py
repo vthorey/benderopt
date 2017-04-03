@@ -6,9 +6,8 @@ def generate_samples_normal(mu,
                             sigma,
                             low,
                             high,
-                            step=None,
+                            step,
                             size=1,
-                            max_retry=50
                             ):
     """Generate sample for (truncated)(discrete)normal density."""
 
@@ -47,7 +46,7 @@ def normal_pdf(samples,
                sigma,
                low,
                high,
-               step=None):
+               step):
     """Evaluate (truncated)(discrete)normal probability density function for each sample."""
     values = None
     if step is None:

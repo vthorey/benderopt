@@ -6,8 +6,8 @@ def generate_samples_lognormal(mu,
                                sigma,
                                low,
                                high,
-                               step=None,
-                               base=10,
+                               step,
+                               base,
                                size=1,
                                ):
     """Generate sample for (truncated)(discrete)log10normal density."""
@@ -27,7 +27,7 @@ def lognormal_cdf(samples,
                   sigma,
                   low,
                   high,
-                  base=10,
+                  base,
                   ):
     """Evaluate (truncated)normal cumulated density function for each samples.
 
@@ -68,8 +68,8 @@ def lognormal_pdf(samples,
                   sigma,
                   low,
                   high,
-                  base=10,
-                  step=None
+                  base,
+                  step
                   ):
     """Evaluate (truncated)(discrete)normal probability density function for each sample."""
     values = None

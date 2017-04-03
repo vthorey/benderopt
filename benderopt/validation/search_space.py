@@ -80,6 +80,21 @@ def set_low_high(search_space, low=-np.inf, high=np.ing):
     return search_space
 
 
+def check_base(search_space,):
+
+    if search_space.get("base") and type(search_space.get("base")) not in (float, int,):
+        raise ValueError
+
+
+def set_base(search_space, base=10):
+    search_space = search_space.copy()
+
+    if "base" not in search_space.keys():
+        search_space["base"] = base
+
+    return search_space
+
+
 def validate_normal(search_space):
     # error = "Expected a type dict with mandatory keys : [mu, sigma] and optional key log  or step"
     search_space = search_space.copy()
@@ -129,7 +144,11 @@ def validate_lognormal(search_space):
 
     check_low_high(search_space, optional=True)
 
+    check_base(search_space)
+
     search_space = set_step(search_space)
+
+    search_space = set_base(search_space, base=10)
 
     return search_space
 
@@ -146,6 +165,9 @@ def validate_loguniform(search_space):
     check_step(search_space)
 
     search_space = set_step(search_space)
+
+    search_space = set_base(search_space, base=10)
+
     return search_space
 
 
