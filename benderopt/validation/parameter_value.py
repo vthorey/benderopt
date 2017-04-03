@@ -18,10 +18,10 @@ def validate_normal(value, low, high, **kwargs):
     return test
 
 
-def validate_lognormal(value, low, high, **kwargs):
+def validate_lognormal(value, low, high, base, **kwargs):
     test = True
-    low = np.exp(low)
-    high = np.exp(high)
+    low = base ** low
+    high = base ** high
     if value < low:
         test = False
     elif value > high:
@@ -38,10 +38,10 @@ def validate_uniform(value, low, high, **kwargs):
     return test
 
 
-def validate_loguniform(value, low, high, **kwargs):
+def validate_loguniform(value, low, high, base, **kwargs):
     test = True
-    low = np.exp(low)
-    high = np.exp(high)
+    low = base ** low
+    high = base ** high
     if value < low:
         test = False
     elif value > high:
