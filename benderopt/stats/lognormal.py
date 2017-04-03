@@ -7,14 +7,14 @@ def generate_samples_lognormal(mu,
                                low,
                                high,
                                step=None,
+                               base=10,
                                size=1,
-                               max_retry=50
                                ):
-    """Generate sample for (truncated)(discrete)normal density."""
+    """Generate sample for (truncated)(discrete)log10normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
     a, b = (low - mu) / sigma, (high - mu) / sigma
-    samples = np.exp(stats.truncnorm.rvs(a=a, b=b, size=size, loc=mu, scale=sigma))
+    samples = base ** stats.truncnorm.rvs(a=a, b=b, size=size, loc=mu, scale=sigma)
 
     if step:
         samples = step * np.round(samples / step)
@@ -27,6 +27,7 @@ def lognormal_cdf(samples,
                   sigma,
                   low,
                   high,
+                  base=10,
                   ):
     """Evaluate (truncated)normal cumulated density function for each samples.
 
@@ -34,13 +35,24 @@ def lognormal_cdf(samples,
 
     From scipy:
     If X normal, log(X) = Y follow a lognormal dist if s=sigma and scale = exp(mu)
-    np.exp(stats.norm.rvs(size=1000000, loc=mu, scale=sigma))
-    is similar to
-    stats.lognorm.rvs(size=1000000, s=sigma, scale=np.exp(mu))
+    So we infer for a base b : s = sigma * np.log(b) and scale = base ** mu
+    are similar
+    mu = 9.2156
+    sigma = 8.457
+    base = 145.2
+    a = (stats.norm.rvs(size=1000000, loc=mu, scale=sigma))
+    b = np.log(stats.lognorm.rvs(size=1000000, s=sigma * np.log(base), scale=base ** mu)) / np.log(base)
+
+    plt.subplot(2, 1, 1)
+    plt.hist(a, bins=5000)
+    plt.subplot(2, 1, 2)
+    plt.hist(b, bins=5000)
+    plt.show()
+
     """
     parametrization = {
-        's': sigma,
-        'scale': np.exp(mu),
+        's': sigma * np.log(base),
+        'scale': base ** mu,
     }
     cdf_low = stats.lognorm.cdf(low, **parametrization)
     cdf_high = stats.lognorm.cdf(high, **parametrization)
@@ -56,14 +68,15 @@ def lognormal_pdf(samples,
                   sigma,
                   low,
                   high,
+                  base=10,
                   step=None
                   ):
     """Evaluate (truncated)(discrete)normal probability density function for each sample."""
     values = None
     if step is None:
         parametrization = {
-            's': sigma,
-            'scale': np.exp(mu),
+            's': sigma * np.log(base),
+            'scale': base ** mu,
         }
         cdf_low = stats.lognorm.cdf(low, **parametrization)
         cdf_high = stats.lognorm.cdf(high, **parametrization)
