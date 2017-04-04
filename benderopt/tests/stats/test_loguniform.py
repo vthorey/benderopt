@@ -1,13 +1,9 @@
 from benderopt.stats import sample_generators
 from benderopt.stats import probability_density_function
-
+from benderopt.utils import logb
 import numpy as np
 
 np.random.seed(0)
-
-
-def logb(samples, base):
-    return np.log(samples) / np.log(base)
 
 
 def test_loguniform_generator():
@@ -71,7 +67,7 @@ def test_loguniform_step_pdf():
     high = 10 ** 3
     step = low
     base = 10
-    size = 10000
+    size = 100000
     epsilon = 1e-1
 
     samples = sample_generators["loguniform"](size=size, low=low, high=high, step=step, base=base)
@@ -80,7 +76,7 @@ def test_loguniform_step_pdf():
                                    bins=np.arange(low - step / 10, high, step),
                                    normed=True)
     densities = probability_density_function["loguniform"](
-        samples=bin_edges[0:-1] + 1,
+        samples=bin_edges[0:-1] + step / 10,
         low=low, high=high, step=step, base=base)
     assert np.sum(densities[samples < low]) == 0
     assert np.sum(densities[samples >= high]) == 0
