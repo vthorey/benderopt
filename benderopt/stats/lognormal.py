@@ -31,7 +31,7 @@ def lognormal_cdf(samples,
                   ):
     """Evaluate (truncated)normal cumulated density function for each samples.
 
-    http://mathworld.wolfram.com/GibratsDistribution.html
+    https://onlinecourses.science.psu.edu/stat414/node/157
 
     From scipy:
     If X normal, log(X) = Y follow a lognormal dist if s=sigma and scale = exp(mu)
