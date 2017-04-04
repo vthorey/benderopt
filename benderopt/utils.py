@@ -1,5 +1,6 @@
 import os
 from benderopt.base import OptimizationProblem
+import numpy as np
 
 
 def get_test_optimization_problem():

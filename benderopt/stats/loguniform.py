@@ -2,9 +2,14 @@ import numpy as np
 from numpy import random
 
 
+def logb(samples, base):
+    return np.log(samples) / np.log(base)
+
+
 def generate_samples_loguniform(low, high, step, base, size=1):
     """Generate sample for (discrete)uniform density."""
-    samples = base ** (random.uniform(low=low, high=high, size=size))
+
+    samples = base ** (random.uniform(low=logb(low, base), high=logb(high, base), size=size))
     if step:
         samples = step * np.floor(samples / step)
     return samples
@@ -15,8 +20,9 @@ def loguniform_cdf(samples, low, high, base):
 
     Integral of below pdf between base ** low and sample
     """
-    values = ((np.log(samples) / np.log(base)) - low) / (high - low)
-    values[(samples < (base ** low)) + (samples >= (base ** high))] = 0
+
+    values = (logb(samples, base) - logb(low, base)) / (logb(high, base) - logb(samples, base))
+    values[(samples < low) + (samples >= high)] = 0
     return values
 
 
@@ -25,20 +31,20 @@ def loguniform_pdf(samples, low, high, base, step):
 
     https://onlinecourses.science.psu.edu/stat414/node/157
     Definition. Let X be a continuous random variable with generic probability density function
-     (x) defined over the support low <= x < high. And, let Y = u(X) be an invertible function of X
+     (x) defined over the support v(low) <= x < v(high). And, let Y = u(X) be an invertible function of X
      with inverse function X = v(Y). Then, using the change-of-variable technique,*
      the probability density function of Y is:
 
     fY(y) = fX(v(y)) × |v′(y)|
 
-    defined over the support u(low) <= y < u(high).
+    defined over the support low <= y < high.
 
     here y = base ** x
          x = ln(y) / ln(base)
-    fX(x) = 1 / (high - low)
+    fX(x) = 1 / (v(high) - v(low))
 
-    fY(y) = (1 / (high - low)) * (1 / (y * np.log(base))
-    for base ** low <= y < base ** high
+    fY(y) = (1 / (v(high) - v(low))) * (1 / (y * np.log(base))
+    for low <= y < high
 
     Visual proof:
 
@@ -55,9 +61,9 @@ def loguniform_pdf(samples, low, high, base, step):
     plt.show()
     """
     if step is None:
-        values = 1 / ((high - low) * samples * np.log(base))
+        values = 1 / ((logb(high, base) - logb(low, base)) * samples * np.log(base))
     else:
         values = (loguniform_cdf(samples + step, low=low, high=high, base=base) -
                   loguniform_cdf(samples, low=low, high=high, base=base))
-    values[(samples < (base ** low)) + (samples >= (base ** high))] = 0
+    values[(samples < low) + (samples >= high)] = 0
     return values
