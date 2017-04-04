@@ -56,4 +56,6 @@ def normal_pdf(samples,
     else:
         values = (normal_cdf(samples + step / 2, mu=mu, sigma=sigma, low=low, high=high) -
                   normal_cdf(samples - step / 2, mu=mu, sigma=sigma, low=low, high=high))
+
+    values[(samples < low) + (samples >= high)] = 0
     return values
