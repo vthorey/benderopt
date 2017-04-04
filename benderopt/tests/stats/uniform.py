@@ -14,6 +14,7 @@ def test_uniform_generator():
     size = 10000,
     epsilon = 1e-2
     samples = sample_generators["uniform"](size=size, **data)
+    assert np.abs(np.mean(samples) - (data["low"] + data["high"]) / 2) < epsilon
     assert np.abs(np.mean(samples) - 0.5) < epsilon
     assert np.sum(samples < data["low"]) == 0
     assert np.sum(samples >= data["high"]) == 0
