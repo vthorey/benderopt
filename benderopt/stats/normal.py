@@ -16,7 +16,7 @@ def generate_samples_normal(mu,
     samples = stats.truncnorm.rvs(a=a, b=b, size=size, loc=mu, scale=sigma)
 
     if step:
-        samples = step * np.round(samples / step)
+        samples = step * np.floor(samples / step)
 
     return samples
 
