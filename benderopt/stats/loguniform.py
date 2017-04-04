@@ -1,9 +1,6 @@
 import numpy as np
 from numpy import random
-
-
-def logb(samples, base):
-    return np.log(samples) / np.log(base)
+from benderopt.utils import logb
 
 
 def generate_samples_loguniform(low, high, step, base, size=1):
@@ -20,8 +17,7 @@ def loguniform_cdf(samples, low, high, base):
 
     Integral of below pdf between base ** low and sample
     """
-
-    values = (logb(samples, base) - logb(low, base)) / (logb(high, base) - logb(samples, base))
+    values = (logb(samples, base) - logb(low, base)) / (logb(high, base) - logb(low, base))
     values[(samples < low) + (samples >= high)] = 0
     return values
 

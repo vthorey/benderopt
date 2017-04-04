@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+from benderopt.utils import logb
 
 
 def generate_samples_lognormal(mu,
@@ -13,8 +14,13 @@ def generate_samples_lognormal(mu,
     """Generate sample for (truncated)(discrete)log10normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
-    a, b = (low - mu) / sigma, (high - mu) / sigma
-    samples = base ** stats.truncnorm.rvs(a=a, b=b, size=size, loc=mu, scale=sigma)
+    a = (logb(low, base) - logb(mu, base)) / logb(sigma, base)
+    b = (logb(high, base) - logb(mu, base)) / logb(sigma, base)
+    samples = base ** stats.truncnorm.rvs(a=a,
+                                          b=b,
+                                          size=size,
+                                          loc=logb(mu, base),
+                                          scale=logb(sigma, base))
 
     if step:
         samples = step * np.floor(samples / step)
@@ -51,14 +57,14 @@ def lognormal_cdf(samples,
 
     """
     parametrization = {
-        's': sigma * np.log(base),
-        'scale': base ** mu,
+        's': logb(sigma, base) * np.log(base),
+        'scale': base ** (logb(mu, base)),
     }
-    cdf_low = stats.lognorm.cdf(low, **parametrization)
-    cdf_high = stats.lognorm.cdf(high, **parametrization)
+    cdf_low = stats.lognorm.cdf(logb(low, base), **parametrization)
+    cdf_high = stats.lognorm.cdf(logb(high, base), **parametrization)
     values = (stats.lognorm.cdf(samples, **parametrization) - cdf_low) / (cdf_high - cdf_low)
     values[(samples < low)] = 0
-    values[(samples > high)] = 1
+    values[(samples >= high)] = 1
 
     return values
 
@@ -75,16 +81,16 @@ def lognormal_pdf(samples,
     values = None
     if step is None:
         parametrization = {
-            's': sigma * np.log(base),
-            'scale': base ** mu,
+            's': logb(sigma, base) * np.log(base),
+            'scale': base ** (logb(mu, base)),
         }
-        cdf_low = stats.lognorm.cdf(low, **parametrization)
-        cdf_high = stats.lognorm.cdf(high, **parametrization)
+        cdf_low = stats.lognorm.cdf(logb(low, base), **parametrization)
+        cdf_high = stats.lognorm.cdf(logb(high, base), **parametrization)
         values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)
 
     else:
         values = (lognormal_cdf(samples + step, mu=mu, sigma=sigma, low=low, high=high) -
                   lognormal_cdf(samples, mu=mu, sigma=sigma, low=low, high=high))
 
-    values[(samples < low) + (samples > high)] = 0
+    values[(samples < low) + (samples >= high)] = 0
     return values
