@@ -17,7 +17,7 @@ def generate_samples_lognormal(mu,
     samples = base ** stats.truncnorm.rvs(a=a, b=b, size=size, loc=mu, scale=sigma)
 
     if step:
-        samples = step * np.round(samples / step)
+        samples = step * np.floor(samples / step)
 
     return samples
 

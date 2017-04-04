@@ -10,4 +10,4 @@ def generate_samples_categorical(values, probabilities, size=1):
 def categorical_pdf(samples, values, probabilities):
     """Evaluate categorical log probability density function for each samples."""
     converter = dict(zip(values, probabilities))
-    return np.array([converter[value] for value in values])
+    return np.array([converter[sample] for sample in samples])
