@@ -15,9 +15,9 @@ def loguniform_cdf(samples, low, high, base):
 
     Integral of below pdf between base ** low and sample
     """
-    samples = ((np.log(samples) / np.log(base)) - low) / (high - low)
-    samples[(samples < (base ** low)) + (samples >= (base ** high))] = 0
-    return samples
+    values = ((np.log(samples) / np.log(base)) - low) / (high - low)
+    values[(samples < (base ** low)) + (samples >= (base ** high))] = 0
+    return values
 
 
 def loguniform_pdf(samples, low, high, base, step):
@@ -56,8 +56,8 @@ def loguniform_pdf(samples, low, high, base, step):
     """
     if step is None:
         values = 1 / ((high - low) * samples * np.log(base))
-        values[(samples < (base ** low)) + (samples >= (base ** high))] = 0
     else:
         values = (loguniform_cdf(samples + step, low=low, high=high, base=base) -
                   loguniform_cdf(samples, low=low, high=high, base=base))
+    values[(samples < (base ** low)) + (samples >= (base ** high))] = 0
     return values

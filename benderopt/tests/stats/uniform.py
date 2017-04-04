@@ -45,7 +45,6 @@ def test_uniform_pdf():
     assert np.sum(densities[samples >= data["high"]]) == 0
     assert np.sum((densities[1:] - densities[:-1]) != 0) == 2
     assert densities[densities != 0][0] == 1 / (data["high"])
-    assert (np.sum(densities) / len(samples) - 1) <= 1e-3
 
 
 def test_uniform_step_pdf():

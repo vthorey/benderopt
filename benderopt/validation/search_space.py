@@ -126,6 +126,12 @@ def validate_uniform(search_space):
 
     check_step(search_space)
 
+    if "step" in search_space.keys():
+        if type(search_space["step"]) not in (int, float):
+            raise ValueError
+        if search_space["step"] >= search_space["high"]:
+            raise ValueError("Step must be strictly lower than high bound.")
+
     search_space = set_step(search_space)
 
     return search_space
