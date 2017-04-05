@@ -5,7 +5,7 @@ def validate_categorical(search_space):
     # error = "Expected a dict with mandatory key 'values' (list) and optional key 'probabilities' (list)"
 
     if type(search_space) != dict:
-        raise ValueError("Search space must be a dict with mandatory key 'value'")
+        raise ValueError("Search space must be a dict.")
 
     search_space = search_space.copy()
 

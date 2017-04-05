@@ -25,7 +25,7 @@ is_parameter_value_valid = {
 def validate_mixture(search_space):
     # error = "Expected a type dict with mandatory keys : [low, high] and optional key [log]"
     if type(search_space) != dict:
-        raise ValueError
+        raise ValueError("Search space must be a dict.")
 
     search_space = search_space.copy()
 
