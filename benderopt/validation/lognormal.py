@@ -4,7 +4,7 @@ import numpy as np
 def validate_lognormal(search_space):
     # error = "Expected a type dict with mandatory keys : [mu, sigma] and optional key log  or step"
     if type(search_space) != dict:
-        raise ValueError
+        raise ValueError("Search space must be a dict.")
 
     search_space = search_space.copy()
 
