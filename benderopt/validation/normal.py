@@ -33,7 +33,7 @@ def validate_normal(search_space):
     if "step" in search_space.keys():
         if search_space["step"] and type(search_space["step"]) not in (int, float):
             raise ValueError("'step' must be a float or int.")
-        if search_space["step"] >= search_space["high"]:
+        if search_space["step"] and search_space["step"] >= search_space["high"]:
             raise ValueError("Step must be strictly lower than high bound.")
 
     search_space.setdefault("step", None)
