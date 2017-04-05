@@ -10,29 +10,31 @@ def validate_normal(search_space):
 
     if "mu" not in search_space.keys() or type(search_space["mu"]) not in (int, float):
         print(search_space)
-        raise ValueError
+        raise ValueError("key 'mu' (loc of normal distribution) is mandatory")
 
     if "sigma" not in search_space.keys() or type(search_space["sigma"]) not in (int, float):
-        raise ValueError
-
-    if "step" in search_space.keys():
-        if search_space["step"] and type(search_space["step"]) not in (int, float):
-            raise ValueError
+        raise ValueError("key 'sigma' (scale of normal distribution) is mandatory")
 
     if "low" in search_space.keys():
         if type(search_space["low"]) not in (int, float):
-            raise ValueError
+            raise ValueError("'low' bound must be a float or int")
 
     if "high" in search_space.keys():
         if type(search_space["high"]) not in (int, float):
-            raise ValueError
+            raise ValueError("'high' bound must be a float or int")
 
     if "high" in search_space.keys() and "low" in search_space.keys():
         if search_space["high"] <= search_space["low"]:
-            raise ValueError("low <= high")
+            raise ValueError("'low' must be < 'high'")
 
     search_space.setdefault("low", -np.inf)
-    search_space.setdefault("high", -np.inf)
+    search_space.setdefault("high", np.inf)
+
+    if "step" in search_space.keys():
+        if search_space["step"] and type(search_space["step"]) not in (int, float):
+            raise ValueError("'step' must be a float or int.")
+        if search_space["step"] >= search_space["high"]:
+            raise ValueError("Step must be strictly lower than high bound.")
 
     search_space.setdefault("step", None)
 
