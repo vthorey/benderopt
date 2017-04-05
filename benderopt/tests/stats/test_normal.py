@@ -1,6 +1,7 @@
 from benderopt.stats import sample_generators
 from benderopt.stats import probability_density_function
 import numpy as np
+from scipy import stats
 
 np.random.seed(0)
 
@@ -8,7 +9,7 @@ np.random.seed(0)
 def test_normal_generator():
     """Test to reassure."""
     mu = 5
-    sigma = 3
+    sigma = 5
     low = 0
     high = 15
     step = None
@@ -21,11 +22,13 @@ def test_normal_generator():
                                           low=low,
                                           high=high,
                                           step=step)
+    a = (low - mu) / sigma
+    b = (high - mu) / sigma
     # Median
-    theorical_median = mu
+    theorical_median = stats.truncnorm.median(a=a, b=b, loc=mu, scale=sigma)
     assert np.abs(np.median(samples) - theorical_median) / theorical_median < epsilon
     # mean (expected value)
-    theorical_mean = mu
+    theorical_mean = stats.truncnorm.mean(a=a, b=b, loc=mu, scale=sigma)
     assert np.abs(np.mean(samples) - theorical_mean) / theorical_mean < epsilon
     assert np.sum(samples < low) == 0
     assert np.sum(samples >= high) == 0
