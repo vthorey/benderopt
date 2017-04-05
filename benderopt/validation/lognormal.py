@@ -34,7 +34,7 @@ def validate_lognormal(search_space):
             raise ValueError("High bound must be strictly positive")
 
     if "high" in search_space.keys() and "low" in search_space.keys():
-        if search_space["high"] >= search_space["low"]:
+        if search_space["high"] <= search_space["low"]:
             raise ValueError("low <= high")
 
     if search_space.get("base") and type(search_space.get("base")) not in (float, int,):
