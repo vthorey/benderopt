@@ -33,11 +33,11 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
             }
         )
 
-    if parameter.category in ("uniform", "normal"):
-        if parameter.category == "uniform":
+    if parameter.category in ("uniform", "normal", "loguniform", "lognormal"):
+        if parameter.category in ("uniform", "loguniform"):
             prior_mu = 0.5 * (search_space["high"] + search_space["low"])
             prior_sigma = (search_space["high"] - search_space["low"])
-        elif parameter.category == "normal":
+        elif parameter.category in ("normal", "lognormal"):
             prior_mu = search_space["mu"]
             prior_sigma = search_space["sigma"]
 
@@ -78,8 +78,18 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
                                 "sigma": sigma.tolist(),
                                 "low": search_space["low"],
                                 "high": search_space["high"],
-                                "log": search_space.get("log", False),
                                 "step": search_space.get("step", None)
+                            }
+                        } if parameter.category[:3] != "log" else
+                        {
+                            "category": "lognormal",
+                            "search_space": {
+                                "mu": mu.tolist(),
+                                "sigma": sigma.tolist(),
+                                "low": search_space["low"],
+                                "high": search_space["high"],
+                                "step": search_space["step"],
+                                "base": search_space["base"],
                             }
                         } for mu, sigma in zip(mus, sigmas)
                     ],

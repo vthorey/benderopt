@@ -31,7 +31,7 @@ def validate_loguniform(search_space):
         if type(search_space["step"]) not in (int, float):
             raise ValueError
         if ("base" in search_space.keys() and
-                search_space["step"] >= (search_space["base"] ** search_space["high"])):
+                search_space["step"] >= (search_space["high"])):
             raise ValueError("Step must be strictly lower than base ** high.")
 
     if search_space.get("base") and type(search_space.get("base")) not in (float, int,):

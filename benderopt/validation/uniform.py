@@ -20,7 +20,7 @@ def validate_uniform(search_space):
             raise ValueError
 
     if "high" in search_space.keys() and "low" in search_space.keys():
-        if search_space["high"] >= search_space["low"]:
+        if search_space["high"] <= search_space["low"]:
             raise ValueError("low <= high")
 
     if "step" in search_space.keys():
