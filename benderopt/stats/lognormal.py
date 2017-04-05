@@ -89,8 +89,8 @@ def lognormal_pdf(samples,
         values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)
 
     else:
-        values = (lognormal_cdf(samples + step, mu=mu, sigma=sigma, low=low, high=high) -
-                  lognormal_cdf(samples, mu=mu, sigma=sigma, low=low, high=high))
+        values = (lognormal_cdf(samples + step, mu=mu, sigma=sigma, low=low, high=high, base=base) -
+                  lognormal_cdf(samples, mu=mu, sigma=sigma, low=low, high=high, base=base))
 
     values[(samples < low) + (samples >= high)] = 0
     return values
