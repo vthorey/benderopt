@@ -1,9 +1,9 @@
 def validate_uniform(search_space):
     # error = "Expected a type dict with mandatory keys : [low, high] and optional key [log]"
-    search_space = search_space.copy()
-
     if type(search_space) != dict:
         raise ValueError
+
+    search_space = search_space.copy()
 
     if "low" not in search_space.keys():
         raise ValueError

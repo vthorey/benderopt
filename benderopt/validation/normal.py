@@ -3,10 +3,10 @@ import numpy as np
 
 def validate_normal(search_space):
     # error = "Expected a type dict with mandatory keys : [mu, sigma] and optional key log  or step"
-    search_space = search_space.copy()
-
     if type(search_space) != dict:
         raise ValueError
+
+    search_space = search_space.copy()
 
     if "mu" not in search_space.keys() or type(search_space["mu"]) not in (int, float):
         print(search_space)
