@@ -1,33 +1,38 @@
+from .utils import ValidationError
 import numpy as np
 
 
 def validate_categorical(search_space):
     # error = "Expected a dict with mandatory key 'values' (list) and optional key 'probabilities' (list)"
-
     if type(search_space) != dict:
-        raise ValueError("Search space must be a dict.")
+        raise ValidationError(message_key="search_space_type")
 
     search_space = search_space.copy()
 
-    if "values" not in search_space.keys() or type(search_space['values']) != list:
-        raise ValueError("search_space['values'] must be a list")
+    if "values" not in search_space.keys():
+        raise ValidationError(message_key="values_mandatory")
 
-    if "probabilities" in search_space.keys() and (
-            type(search_space['probabilities']) != list or
-            len(search_space['probabilities']) != len(search_space['values'])):
-        raise ValueError("search_space['probabilities'] must be a list summing to 1.")
+    if type(search_space["values"]) != list:
+        raise ValidationError(message_key="values_type")
 
-    # Test that proba sum to 1 but we are lazy and we try directly
+    if "probabilities" in search_space.keys():
+        if type(search_space["probabilities"]) != list:
+            raise ValidationError(message_key="probabilities_type")
+
+        if len(search_space["probabilities"]) != len(search_space["values"]):
+            raise ValidationError(message_key="probabilities_size")
+
+    # Lazy test for summing to 1 (avoiding numerical rounding)
     if "probabilities" in search_space.keys():
         try:
             np.random.choice(range(len(search_space["probabilities"])),
                              p=search_space["probabilities"])
-        except Exception:
-            raise ValueError("search_space['probabilities'] must be a list summing to 1.")
+        except ValueError:
+            raise ValidationError(message_key="probabilities_sum")
 
-    if "probabilities" not in search_space.keys():
-        number_of_values = len(search_space["values"])
-        search_space["probabilities"] = list(np.ones(number_of_values) / number_of_values)
+    search_space.setdefault(
+        "probabilities",
+        list(np.ones(len(search_space["values"])) / len(search_space["values"])))
 
     return search_space
 

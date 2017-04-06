@@ -1,5 +1,6 @@
 import pytest
 from benderopt.validation.loguniform import validate_loguniform, validate_loguniform_value
+from benderopt.validation.utils import ValidationError
 
 
 def test_loguniform_search_space_ok():
@@ -16,7 +17,7 @@ def test_loguniform_search_space_ok():
 def test_loguniform_search_space_not_dict():
     search_space = [1e-5, 1e5],
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -25,7 +26,7 @@ def test_loguniform_search_space_no_high():
         "low": 1e-5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -34,7 +35,7 @@ def test_loguniform_search_space_no_low():
         "high": 1e5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -44,7 +45,7 @@ def test_loguniform_search_space_bad_high():
         "high": 1e5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -54,7 +55,7 @@ def test_loguniform_search_space_bad_low():
         "high": [1e5],
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -64,7 +65,7 @@ def test_loguniform_search_space_low_not_positive():
         "high": 1e5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -74,7 +75,7 @@ def test_loguniform_search_space_bad_low_high():
         "high": 1e5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -85,7 +86,7 @@ def test_loguniform_search_space_bad_step():
         "step": [1]
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
     search_space = {
@@ -94,7 +95,7 @@ def test_loguniform_search_space_bad_step():
         "step": 1e6,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 
@@ -105,7 +106,7 @@ def test_loguniform_search_space_bad_base():
         "base": [10],
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_loguniform(search_space)
 
 

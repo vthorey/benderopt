@@ -1,5 +1,6 @@
 import pytest
 from benderopt.validation.uniform import validate_uniform, validate_uniform_value
+from benderopt.validation.utils import ValidationError
 
 
 def test_uniform_search_space_ok():
@@ -15,7 +16,7 @@ def test_uniform_search_space_ok():
 def test_uniform_search_space_not_dict():
     search_space = [-5, 5],
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
@@ -24,7 +25,7 @@ def test_uniform_search_space_no_high():
         "low": -5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
@@ -33,7 +34,7 @@ def test_uniform_search_space_no_low():
         "high": 5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
@@ -43,7 +44,7 @@ def test_uniform_search_space_bad_high():
         "high": 5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
@@ -53,7 +54,7 @@ def test_uniform_search_space_bad_low():
         "high": [5],
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
@@ -63,7 +64,7 @@ def test_uniform_search_space_bad_low_high():
         "high": 5,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
@@ -74,7 +75,7 @@ def test_uniform_search_space_bad_step():
         "step": [1]
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
     search_space = {
@@ -83,7 +84,7 @@ def test_uniform_search_space_bad_step():
         "step": 6,
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 

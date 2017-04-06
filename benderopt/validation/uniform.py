@@ -1,33 +1,33 @@
-from .utils import error_messages
+from .utils import ValidationError
 
 
 def validate_uniform(search_space):
     # error = "Expected a type dict with mandatory keys : [low, high] and optional key [log]"
     if type(search_space) != dict:
-        raise ValueError("Search space must be a dict.")
+        raise ValidationError(message_key="search_space_type")
 
     search_space = search_space.copy()
 
     if "low" not in search_space.keys():
-        raise ValueError(error_messages["low_mandatory"])
+        raise ValidationError(message_key="low_mandatory")
 
     if "high" not in search_space.keys():
-        raise ValueError(error_messages["high_mandatory"])
+        raise ValidationError(message_key="high_mandatory")
 
     if type(search_space["low"]) not in (int, float):
-        raise ValueError("'low' bound must be a float or int")
+        raise ValidationError(message_key="low_type")
 
     if type(search_space["high"]) not in (int, float):
-        raise ValueError("'high' bound must be a float or int")
+        raise ValidationError(message_key="high_type")
 
     if search_space["high"] <= search_space["low"]:
-        raise ValueError("'low' must be < 'high'")
+        raise ValidationError(message_key="high_inferior_low")
 
     if "step" in search_space.keys():
         if type(search_space["step"]) not in (int, float):
-            raise ValueError(error_messages["step_type"])
+            raise ValidationError(message_key="step_type")
         if search_space["step"] >= search_space["high"]:
-            raise ValueError("Step must be strictly lower than high bound.")
+            raise ValidationError(message_key="high_inferior_step")
 
     search_space.setdefault("step", None)
 
