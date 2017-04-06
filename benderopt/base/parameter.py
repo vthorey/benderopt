@@ -1,5 +1,6 @@
 from benderopt.validation import is_parameter_value_valid, validate_search_space
 from benderopt.stats import sample_generators, probability_density_function
+from benderopt.validation.utils import ValidationError
 
 
 class Parameter:
@@ -24,9 +25,9 @@ class Parameter:
     @classmethod
     def from_dict(cls, data):
         if type(data) != dict:
-            raise ValueError
+            raise ValidationError("'data' must be a dict")
         if set(data.keys()) != set(["name", "category", "search_space"]):
-            raise ValueError
+            raise ValidationError("'name', 'category', 'search_space' keys are mandatory")
         return cls(**data)
 
     def __repr__(self):

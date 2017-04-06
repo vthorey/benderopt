@@ -1,5 +1,6 @@
 import pytest
 from benderopt.validation.categorical import validate_categorical, validate_categorical_value
+from benderopt.validation.utils import ValidationError
 
 
 def test_categorical_search_space_ok():
@@ -14,7 +15,7 @@ def test_categorical_search_space_ok():
 def test_categorical_search_space_not_dict():
     search_space = ["a", "b", "c"],
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_categorical(search_space)
 
 
@@ -23,14 +24,16 @@ def test_categorical_search_space_not_values():
 
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_categorical(search_space)
 
+
+def test_categorical_search_space_bad_values():
     search_space = {
         "values": 3
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_categorical(search_space)
 
 
@@ -40,15 +43,17 @@ def test_categorical_search_space_bad_probas():
         "probabilities": 3
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_categorical(search_space)
 
+
+def test_categorical_search_space_bad_probas_size():
     search_space = {
         "values": ["a", "b", "c"],
         "probabilities": [0.5, 0.5]
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_categorical(search_space)
 
 
@@ -58,7 +63,7 @@ def test_categorical_search_space_wrong_probas():
         "probabilities": [0.5, 0.5, 0.5]
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         search_space = validate_categorical(search_space)
 
 
