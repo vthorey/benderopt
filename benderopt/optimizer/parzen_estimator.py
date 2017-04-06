@@ -112,9 +112,7 @@ class ParzenEstimator(BaseOptimizer):
                  batch=True,
                  ):
         super(ParzenEstimator, self).__init__(optimization_problem,
-                                              authorize_duplicate=True,
-                                              batch=None,
-                                              max_retry=50)
+                                              batch=None)
 
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
