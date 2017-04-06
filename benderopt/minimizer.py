@@ -19,22 +19,22 @@ def minimize(f,
     return optimization_problem.best_sample
 
 
-if __name__ == "__main__":
-    def f(x):
-        y = np.sin(x)
-        return (y - 1) ** 2
+# if __name__ == "__main__":
+#     def f(x):
+#         y = np.sin(x)
+#         return (y - 1) ** 2
 
-    optimization_problem = [
-        {
-            "name": "x",
-            "category": "normal",
-            "search_space": {
-                "mu": np.pi / 2,
-                "sigma": 1,
-                "low": 0,
-                "high": np.pi,
-            }
-        }
-    ]
+#     optimization_problem = [
+#         {
+#             "name": "x",
+#             "category": "normal",
+#             "search_space": {
+#                 "mu": np.pi / 2,
+#                 "sigma": 1,
+#                 "low": 0,
+#                 "high": np.pi,
+#             }
+#         }
+#     ]
 
-    best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
+#     best_sample = minimize(f, optimization_problem, number_of_evaluation=100)

@@ -105,14 +105,12 @@ class ParzenEstimator(BaseOptimizer):
 
     def __init__(self,
                  optimization_problem,
+                 batch=None,
                  gamma=0.15,
                  number_of_candidates=100,
-                 max_retry=5,
-                 authorize_duplicate=False,
-                 batch=True,
                  ):
         super(ParzenEstimator, self).__init__(optimization_problem,
-                                              batch=None)
+                                              batch=batch)
 
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
