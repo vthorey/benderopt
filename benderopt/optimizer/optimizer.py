@@ -33,7 +33,7 @@ class BaseOptimizer:
     def suggest(self):
         results = None
         if self.batch:
-            results = self._generate_sample(self.batch)
+            results = self._generate_samples(self.batch)
         else:
             results = self._generate_samples(1)[0]
         return results

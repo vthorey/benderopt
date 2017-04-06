@@ -5,11 +5,9 @@ class RandomOptimizer(BaseOptimizer):
 
     def __init__(self,
                  optimization_problem,
-                 authorize_duplicate=True,
-                 batch=None,
-                 max_retry=50):
+                 batch=None):
         super(RandomOptimizer, self).__init__(optimization_problem,
-                                              batch=None)
+                                              batch=batch)
 
     def _generate_samples(self, size):
         parameters = self.optimization_problem.parameters
