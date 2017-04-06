@@ -7,8 +7,9 @@ class Parameter:
     def __init__(self, name, category, search_space):
         self.name = name
 
-        if category not in ("categorical", "uniform", "normal", "mixture"):
-            raise ValueError("Category not in base categories: {categorical, uniform, normal, mixture}")
+        if category not in sample_generators.keys():
+            raise ValidationError(message="Category not recognized.")
+
         self.category = category
 
         self.search_space = validate_search_space[self.category](search_space)
@@ -25,9 +26,9 @@ class Parameter:
     @classmethod
     def from_dict(cls, data):
         if type(data) != dict:
-            raise ValidationError("'data' must be a dict")
+            raise ValidationError(message="'data' must be a dict")
         if set(data.keys()) != set(["name", "category", "search_space"]):
-            raise ValidationError("'name', 'category', 'search_space' keys are mandatory")
+            raise ValidationError(message="'name', 'category', 'search_space' keys are mandatory")
         return cls(**data)
 
     def __repr__(self):

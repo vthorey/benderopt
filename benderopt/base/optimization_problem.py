@@ -1,3 +1,4 @@
+from benderopt.validation.utils import ValidationError
 import json
 import numpy as np
 from . import Observation, Parameter
@@ -33,7 +34,7 @@ class OptimizationProblem:
 
      * from a list of Parameter instance
     parameter1 = Parameter(name="param1", category="categorical", search_space={"values": ["a", "b"]})
-    parameter1 = Parameter(name="param2", category="uniform", search_space={"low": 1, "high": 2})
+    parameter2 = Parameter(name="param2", category="uniform", search_space={"low": 1, "high": 2})
     optimization_problem = OptimizationProblem([parameter1, parameter2])
 
     How to add a observation
@@ -72,11 +73,11 @@ class OptimizationProblem:
 
     def __init__(self, parameters):
         if type(parameters) != list:
-            raise ValueError
+            raise ValidationError(message="parameters must be a list of Parameter")
         for parameter in parameters:
             if type(parameter) != Parameter:
-                raise ValueError
-        self.parameters = parameters
+                raise ValidationError(message="parameters must be a list of Parameter")
+        self.parameters = parameters.copy()
         self.observations = []
 
     @property
@@ -109,9 +110,10 @@ class OptimizationProblem:
         if not hasattr(self, "_finite"):
             _finite = True
             for parameter in self.parameters:
-                if parameter.category != "categorical" and "step" not in parameter.search_space.keys():
-                    _finite = False
-                    break
+                if parameter.category != "categorical":
+                    if parameter.search_space.get("step", None) is None:
+                        _finite = False
+                        break
 
             self._finite = _finite
 
@@ -129,7 +131,7 @@ class OptimizationProblem:
     def samples_unicity(self, samples):
         return np.array([True if sample in self.samples else False for sample in samples])
 
-    def get_best_k_sample(self, k):
+    def get_best_k_samples(self, k):
         return sorted(self.observations, key=lambda x: x.loss)[:k]
 
     def add_observation(self, observation, raise_exception=True):
@@ -137,7 +139,7 @@ class OptimizationProblem:
         if valid:
             self.observations.append(observation)
         elif raise_exception:
-            raise ValueError(reason)
+            raise ValidationError(message=reason)
 
     def add_observations_from_list(self, observations, raise_exception=False):
         if type(observations) == list:
@@ -145,12 +147,12 @@ class OptimizationProblem:
                 try:
                     observation = Observation.from_dict(observation_data)
                     self.add_observation(observation, raise_exception=raise_exception)
-                except Exception:
+                except Exception as e:
                     if raise_exception:
-                        raise ValueError("{} invalid for a observation".format(observation_data))
+                        raise e
         else:
             if raise_exception:
-                raise ValueError("Need to give a list of observations")
+                raise ValidationError(message="Need to give a list of observations")
 
     def _check_observation(self, observation):
         valid = True
@@ -174,7 +176,7 @@ class OptimizationProblem:
     def from_list(cls, parameters_data):
         parameters = []
         if type(parameters_data) != list:
-            raise ValueError("parameters_data must be a list of dict")
+            raise ValidationError(message="parameters_data must be a list of dict")
 
         for parameter_data in parameters_data:
             parameters.append(Parameter.from_dict(parameter_data))

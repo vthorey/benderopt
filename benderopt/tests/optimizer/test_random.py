@@ -22,7 +22,7 @@ def test_random_uniform():
 
     best_sample = minimize(f,
                            optimization_problem,
-                           optimizer_type="parzen_estimator",
+                           optimizer_type="random",
                            number_of_evaluation=100)
 
     assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1
@@ -45,7 +45,7 @@ def test_random_normal():
 
     best_sample = minimize(f,
                            optimization_problem,
-                           optimizer_type="parzen_estimator",
+                           optimizer_type="random",
                            number_of_evaluation=100)
 
     assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1
@@ -70,7 +70,7 @@ def test_random_categorical():
 
     best_sample = minimize(f,
                            optimization_problem,
-                           optimizer_type="parzen_estimator",
+                           optimizer_type="random",
                            number_of_evaluation=100)
 
     assert np.abs(best_sample["x"] - (np.pi / 2)) < 1e-5
@@ -92,7 +92,7 @@ def test_random_uniform_step():
 
     best_sample = minimize(f,
                            optimization_problem,
-                           optimizer_type="parzen_estimator",
+                           optimizer_type="random",
                            number_of_evaluation=100)
 
     assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1
