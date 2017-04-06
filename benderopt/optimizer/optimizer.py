@@ -1,7 +1,3 @@
-from benderopt.validation.utils import ValidationError
-import numpy as np
-
-
 class BaseOptimizer:
 
     def __init__(self, optimization_problem, batch):
