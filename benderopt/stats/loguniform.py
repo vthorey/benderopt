@@ -3,26 +3,25 @@ from numpy import random
 from benderopt.utils import logb
 
 
-def generate_samples_loguniform(low, high, step, base, size=1):
+def generate_samples_loguniform(low_log, high_log, step, base, size=1, **kwargs):
     """Generate sample for (discrete)uniform density."""
-
-    samples = base ** (random.uniform(low=logb(low, base), high=logb(high, base), size=size))
+    samples = base ** (random.uniform(low=low_log, high=high_log, size=size))
     if step:
         samples = step * np.floor(samples / step)
     return samples
 
 
-def loguniform_cdf(samples, low, high, base):
+def loguniform_cdf(samples, low, low_log, high, high_log, base):
     """Evaluate (truncated)(discrete)normal cumulated probability density function for each sample.
 
     Integral of below pdf between base ** low and sample
     """
-    values = (logb(samples, base) - logb(low, base)) / (logb(high, base) - logb(low, base))
+    values = (logb(samples, base) - low_log) / (high_log - low_log)
     values[(samples < low) + (samples >= high)] = 0
     return values
 
 
-def loguniform_pdf(samples, low, high, base, step):
+def loguniform_pdf(samples, low, low_log, high, high_log, base, step):
     """Evaluate (truncated)(discrete)normal probability density function for each sample.
 
     https://onlinecourses.science.psu.edu/stat414/node/157
@@ -57,9 +56,19 @@ def loguniform_pdf(samples, low, high, base, step):
     plt.show()
     """
     if step is None:
-        values = 1 / ((logb(high, base) - logb(low, base)) * samples * np.log(base))
+        values = 1 / ((high_log - low_log) * samples * np.log(base))
     else:
-        values = (loguniform_cdf(samples + step, low=low, high=high, base=base) -
-                  loguniform_cdf(samples, low=low, high=high, base=base))
+        values = (loguniform_cdf(samples + step,
+                                 low=low,
+                                 low_log=low_log,
+                                 high=high,
+                                 high_log=high_log,
+                                 base=base) -
+                  loguniform_cdf(samples,
+                                 low=low,
+                                 low_log=low_log,
+                                 high=high,
+                                 high_log=high_log,
+                                 base=base))
     values[(samples < low) + (samples >= high)] = 0
     return values
