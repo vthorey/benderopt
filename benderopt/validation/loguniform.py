@@ -1,3 +1,5 @@
+import numpy as np
+from benderopt.utils import logb
 from .utils import ValidationError
 
 
@@ -37,6 +39,10 @@ def validate_loguniform(search_space):
 
     search_space.setdefault("step", None)
     search_space.setdefault("base", 10)
+
+    with np.errstate(divide='ignore'):  # Low can be 0
+        search_space["low_log"] = logb(search_space["low"], search_space["base"])
+    search_space["high_log"] = logb(search_space["high"], search_space["base"])
 
     return search_space
 

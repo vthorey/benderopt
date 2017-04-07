@@ -146,7 +146,7 @@ def test_lognormal_search_space_no_low_high():
     search_space = validate_lognormal(search_space)
 
     assert "low" in search_space.keys()
-    assert search_space["low"] == -np.inf
+    assert search_space["low"] == 0
     assert "high" in search_space.keys()
     assert search_space["high"] == np.inf
 

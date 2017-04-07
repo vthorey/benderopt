@@ -1,26 +1,25 @@
 import numpy as np
 from scipy import stats
-from benderopt.utils import logb
 
 
-def generate_samples_lognormal(mu,
-                               sigma,
-                               low,
-                               high,
+def generate_samples_lognormal(mu_log,
+                               sigma_log,
+                               low_log,
+                               high_log,
                                step,
                                base,
                                size=1,
-                               ):
+                               **kwargs):
     """Generate sample for (truncated)(discrete)log10normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
-    a = (logb(low, base) - logb(mu, base)) / logb(sigma, base)
-    b = (logb(high, base) - logb(mu, base)) / logb(sigma, base)
+    a = (low_log - mu_log) / sigma_log
+    b = (high_log - mu_log) / sigma_log
     samples = base ** stats.truncnorm.rvs(a=a,
                                           b=b,
                                           size=size,
-                                          loc=logb(mu, base),
-                                          scale=logb(sigma, base))
+                                          loc=mu_log,
+                                          scale=sigma_log)
 
     if step:
         samples = step * np.floor(samples / step)
@@ -29,8 +28,8 @@ def generate_samples_lognormal(mu,
 
 
 def lognormal_cdf(samples,
-                  mu,
-                  sigma,
+                  mu_log,
+                  sigma_log,
                   low,
                   high,
                   base,
@@ -57,8 +56,8 @@ def lognormal_cdf(samples,
 
     """
     parametrization = {
-        's': logb(sigma, base) * np.log(base),
-        'scale': base ** (logb(mu, base)),
+        's': sigma_log * np.log(base),
+        'scale': base ** mu_log,
     }
     cdf_low = stats.lognorm.cdf(low, **parametrization)
     cdf_high = stats.lognorm.cdf(high, **parametrization)
@@ -70,9 +69,13 @@ def lognormal_cdf(samples,
 
 def lognormal_pdf(samples,
                   mu,
+                  mu_log,
                   sigma,
+                  sigma_log,
                   low,
+                  low_log,
                   high,
+                  high_log,
                   base,
                   step
                   ):
@@ -80,18 +83,38 @@ def lognormal_pdf(samples,
     values = None
     if step is None:
         parametrization = {
-            's': logb(sigma, base) * np.log(base),
-            'scale': base ** (logb(mu, base)),
+            's': sigma_log * np.log(base),
+            'scale': base ** mu_log,
         }
         cdf_low = lognormal_cdf(
-            np.array([low]), mu=mu, sigma=sigma, low=low, high=high, base=base)[0]
+            np.array([low]),
+            mu_log=mu_log,
+            sigma_log=sigma_log,
+            low=low,
+            high=high,
+            base=base)[0]
         cdf_high = lognormal_cdf(
-            np.array([high]), mu=mu, sigma=sigma, low=low, high=high, base=base)[0]
+            np.array([high]),
+            mu_log=mu_log,
+            sigma_log=sigma_log,
+            low=low,
+            high=high,
+            base=base)[0]
         values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)
 
     else:
-        values = (lognormal_cdf(samples + step, mu=mu, sigma=sigma, low=low, high=high, base=base) -
-                  lognormal_cdf(samples, mu=mu, sigma=sigma, low=low, high=high, base=base))
+        values = (lognormal_cdf(samples + step,
+                                mu_log=mu_log,
+                                sigma_log=sigma_log,
+                                low=low,
+                                high=high,
+                                base=base) -
+                  lognormal_cdf(samples,
+                                mu_log=mu_log,
+                                sigma_log=sigma_log,
+                                low=low,
+                                high=high,
+                                base=base))
 
     values[(samples < low) + (samples >= high)] = 0
     return values

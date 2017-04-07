@@ -18,6 +18,10 @@ def sum_to_one_key(key):
     return "'{}' sum must equal 1".format(key)
 
 
+def must_be_strictly_superior(key1, key2):
+    return "'{}' must be strictly superior than {}".format(key1, key2)
+
+
 class ValidationError(Exception):
 
     error_messages = {
@@ -27,16 +31,18 @@ class ValidationError(Exception):
         "high_mandatory": mandatory_key("high"),
         "low_type": float_int_key("low"),
         "high_type": float_int_key("high"),
-        "low_inferior_0": "'low' bound must be > 0",
-        "high_inferior_low": "'low' must be strictly lower than 'high'",
+        "low_inferior_0": must_be_strictly_superior("low", 0),
+        "high_inferior_low": must_be_strictly_superior("high", "'low'"),
 
         "mu_mandatory": mandatory_key("mu"),
         "sigma_mandatory": mandatory_key("sigma"),
         "mu_type": float_int_key("mu"),
         "sigma_type": float_int_key("sigma"),
+        "mu_inferior_0": must_be_strictly_superior("mu", 0),
+        "sigma_inferior_1": must_be_strictly_superior("sigma", "1"),
 
         "step_type": float_int_key("step"),
-        "high_inferior_step": "'step' must be strictly lower than 'high'",
+        "high_inferior_step": must_be_strictly_superior("step", "'high'"),
 
         "base_type": float_int_key("base"),
 

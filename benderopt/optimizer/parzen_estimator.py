@@ -42,8 +42,9 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
             prior_mu = search_space["base"] ** (0.5 *
                                                 (logb(search_space["high"], search_space["base"]) +
                                                  logb(search_space["low"], search_space["base"])))
-            prior_sigma = search_space["base"] ** (logb(search_space["high"], search_space["base"]) -
-                                                   logb(search_space["low"], search_space["base"]))
+            prior_sigma = search_space["base"] ** (
+                logb(search_space["high"], search_space["base"]) -
+                logb(search_space["low"], search_space["base"]))
         elif parameter.category in ("normal", "lognormal"):
             prior_mu = search_space["mu"]
             prior_sigma = search_space["sigma"]
@@ -55,13 +56,22 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
         # Trick to get for each mu the greater distance from left and right neighbor
         # when low and high are not defined we use inf to get the only available distance
         # (right neighbor for sigmas[0] and left for sigmas[-1])
-        tmp = np.concatenate(
-            (
-                [search_space.get("low", np.inf)],
-                mus if search_space.get("base") is None else logb(mus, search_space["base"]),
-                [search_space.get("high", -np.inf)],
+        if parameter.category in ("loguniform", "lognormal"):
+            tmp = np.concatenate(
+                (
+                    [search_space["low"]],
+                    logb(mus, search_space["base"]),
+                    [search_space["high"]],
+                )
             )
-        )
+        else:
+            tmp = np.concatenate(
+                (
+                    [search_space.get("low", np.inf)],
+                    mus if search_space.get("base") is None else logb(mus, search_space["base"]),
+                    [search_space.get("high", -np.inf)],
+                )
+            )
         sigmas = (np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1])
                   if search_space.get("base") is None else
                   search_space["base"] ** np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1]))
