@@ -60,12 +60,11 @@ def lognormal_cdf(samples,
         's': logb(sigma, base) * np.log(base),
         'scale': base ** (logb(mu, base)),
     }
-    cdf_low = stats.lognorm.cdf(logb(low, base), **parametrization)
-    cdf_high = stats.lognorm.cdf(logb(high, base), **parametrization)
+    cdf_low = stats.lognorm.cdf(low, **parametrization)
+    cdf_high = stats.lognorm.cdf(high, **parametrization)
     values = (stats.lognorm.cdf(samples, **parametrization) - cdf_low) / (cdf_high - cdf_low)
     values[(samples < low)] = 0
     values[(samples >= high)] = 1
-
     return values
 
 
@@ -84,8 +83,10 @@ def lognormal_pdf(samples,
             's': logb(sigma, base) * np.log(base),
             'scale': base ** (logb(mu, base)),
         }
-        cdf_low = stats.lognorm.cdf(logb(low, base), **parametrization)
-        cdf_high = stats.lognorm.cdf(logb(high, base), **parametrization)
+        cdf_low = lognormal_cdf(
+            np.array([low]), mu=mu, sigma=sigma, low=low, high=high, base=base)[0]
+        cdf_high = lognormal_cdf(
+            np.array([high]), mu=mu, sigma=sigma, low=low, high=high, base=base)[0]
         values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)
 
     else:

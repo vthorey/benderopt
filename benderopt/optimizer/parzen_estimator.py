@@ -1,6 +1,7 @@
 import numpy as np
 from ..base import Parameter
 from .optimizer import BaseOptimizer
+from benderopt.utils import logb
 
 
 def parzen_estimator_build_posterior_parameter(parameter, observations):
@@ -34,9 +35,15 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
         )
 
     if parameter.category in ("uniform", "normal", "loguniform", "lognormal"):
-        if parameter.category in ("uniform", "loguniform"):
+        if parameter.category == "uniform":
             prior_mu = 0.5 * (search_space["high"] + search_space["low"])
             prior_sigma = (search_space["high"] - search_space["low"])
+        elif parameter.category == "loguniform":
+            prior_mu = search_space["base"] ** (0.5 *
+                                                (logb(search_space["high"], search_space["base"]) +
+                                                 logb(search_space["low"], search_space["base"])))
+            prior_sigma = search_space["base"] ** (logb(search_space["high"], search_space["base"]) -
+                                                   logb(search_space["low"], search_space["base"]))
         elif parameter.category in ("normal", "lognormal"):
             prior_mu = search_space["mu"]
             prior_sigma = search_space["sigma"]
@@ -51,11 +58,13 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
         tmp = np.concatenate(
             (
                 [search_space.get("low", np.inf)],
-                mus,
+                mus if search_space.get("base") is None else logb(mus, search_space["base"]),
                 [search_space.get("high", -np.inf)],
             )
         )
-        sigmas = np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1])
+        sigmas = (np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1])
+                  if search_space.get("base") is None else
+                  search_space["base"] ** np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1]))
 
         # Use formulas from hyperopt to clip sigmas
         sigma_max_value = prior_sigma
@@ -108,6 +117,7 @@ class ParzenEstimator(BaseOptimizer):
                  batch=None,
                  gamma=0.15,
                  number_of_candidates=100,
+                 max_observation=30,
                  ):
         super(ParzenEstimator, self).__init__(optimization_problem,
                                               batch=batch)
@@ -120,6 +130,8 @@ class ParzenEstimator(BaseOptimizer):
 
         # Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
+        subsample_observations = np.choice()
+        size = int(len(subsample_observations) * self.gamma)
         observations_l, observations_g = self.optimization_problem.observations_quantile(
             self.gamma)
 

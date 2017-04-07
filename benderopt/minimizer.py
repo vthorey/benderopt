@@ -11,6 +11,7 @@ def minimize(f,
         optimization_problem = OptimizationProblem.from_list(optimization_problem)
 
     for _ in range(number_of_evaluation):
+        print(_)
         optimizer = optimizers[optimizer_type](optimization_problem)
         sample = optimizer.suggest()
         loss = f(**sample)
