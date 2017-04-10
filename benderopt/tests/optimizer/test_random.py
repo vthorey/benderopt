@@ -7,6 +7,34 @@ def f(x):
     return (y - 1) ** 2
 
 
+
+optimization_problem = [
+    {
+        "name": "x",
+        "category": "uniform",
+        "search_space": {
+            "low": 0,
+            "high": np.pi,
+        }
+    }
+]
+for n in [5, 10, 20, 30, 50, 100, 200, 500, 1000, 2000]:
+    print("N = {}".format(n))
+    np.random.seed(1)
+    best_sample = minimize(f,
+                           optimization_problem,
+                           optimizer_type="parzen_estimator",
+                           number_of_evaluation=n)
+    print(f(**best_sample))
+
+    np.random.seed(1)
+    best_sample = minimize(f,
+                           optimization_problem,
+                           optimizer_type="random",
+                           number_of_evaluation=n)
+    print(f(**best_sample))
+
+
 def test_random_uniform():
 
     optimization_problem = [

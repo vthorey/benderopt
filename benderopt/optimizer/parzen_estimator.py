@@ -128,7 +128,7 @@ class ParzenEstimator(BaseOptimizer):
                  gamma=0.15,
                  number_of_candidates=100,
                  subsampling=50,
-                 subsampling_type="best",
+                 subsampling_type="random",
                  ):
         super(ParzenEstimator, self).__init__(optimization_problem,
                                               batch=batch)
