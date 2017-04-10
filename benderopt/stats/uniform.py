@@ -8,7 +8,7 @@ def generate_samples_uniform(low, high, step, size=1):
                              high=high,
                              size=size)
     if step:
-        samples = step * np.floor(samples / step)
+        samples = step * np.floor((samples - low) / step) + low
     return samples
 
 

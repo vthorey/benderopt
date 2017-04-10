@@ -119,9 +119,32 @@ class OptimizationProblem:
 
         return self._finite
 
-    def observations_quantile(self, quantile):
-        size = int(len(self.observations) * quantile)
-        return self.sorted_observations[:size], self.sorted_observations[size:]
+    @property
+    def number_of_observations(self):
+        return len(self.observations)
+
+    def observations_quantile(self, quantile, subsampling=None, subsampling_type="random"):
+        observations_low, observations_high = None, None
+        if subsampling is None:
+            size = int(self.number_of_observations * quantile)
+            observations_low, observations_high = (self.sorted_observations[:size],
+                                                   self.sorted_observations[size:])
+        else:
+            if subsampling_type == "random":
+                if self.number_of_observations > 0:
+                    observations = np.array(self.observations)[
+                        np.random.choice(self.number_of_observations,
+                                         size=subsampling,
+                                         replace=False)]
+                else:
+                    observations = []
+                sorted_observations = sorted(observations, key=lambda x: x.loss)
+            if subsampling_type == "best":
+                sorted_observations = self.sorted_observations[:subsampling]
+            size = int(len(sorted_observations) * quantile)
+            observations_low, observations_high = (sorted_observations[:size],
+                                                   sorted_observations[size:])
+        return observations_low, observations_high
 
     def find_observations(self, sample):
         observations = [

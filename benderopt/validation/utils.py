@@ -61,6 +61,7 @@ class ValidationError(Exception):
         "probabilities_sum": sum_to_one_key("values"),
         "probabilities_size": list_size_key("probabilities", "values"),
 
+        "high_low_multiple_of_step": "'low' and 'high' must be a multiple of step"
     }
 
     def __init__(self, message_key=None, message=None):

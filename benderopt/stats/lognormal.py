@@ -5,6 +5,7 @@ from scipy import stats
 def generate_samples_lognormal(mu_log,
                                sigma_log,
                                low_log,
+                               low,
                                high_log,
                                step,
                                base,
@@ -21,9 +22,10 @@ def generate_samples_lognormal(mu_log,
                                           loc=mu_log,
                                           scale=sigma_log)
 
-    if step:
+    if step and low != -np.inf:
+        samples = step * np.floor((samples - low) / step) + low
+    elif step and low == -np.inf:
         samples = step * np.floor(samples / step)
-
     return samples
 
 
@@ -86,20 +88,8 @@ def lognormal_pdf(samples,
             's': sigma_log * np.log(base),
             'scale': base ** mu_log,
         }
-        cdf_low = lognormal_cdf(
-            np.array([low]),
-            mu_log=mu_log,
-            sigma_log=sigma_log,
-            low=low,
-            high=high,
-            base=base)[0]
-        cdf_high = lognormal_cdf(
-            np.array([high]),
-            mu_log=mu_log,
-            sigma_log=sigma_log,
-            low=low,
-            high=high,
-            base=base)[0]
+        cdf_low = stats.lognorm.cdf(low_log, **parametrization)
+        cdf_high = stats.lognorm.cdf(high_log, **parametrization)
         values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)
 
     else:

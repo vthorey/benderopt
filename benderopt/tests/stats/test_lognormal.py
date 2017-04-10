@@ -26,6 +26,7 @@ def test_lognormal_generator():
                                                   mu_log=mu_log,
                                                   sigma_log=sigma_log,
                                                   low_log=low_log,
+                                                  low=low,
                                                   high_log=high_log,
                                                   base=base,
                                                   step=step), base)
@@ -45,7 +46,7 @@ def test_lognormal_generator_step():
     """Test to reassure."""
     mu = 50
     sigma = 3
-    low = 1
+    low = 2
     high = 100
     base = 10
 
@@ -60,6 +61,7 @@ def test_lognormal_generator_step():
                                              mu_log=mu_log,
                                              sigma_log=sigma_log,
                                              low_log=low_log,
+                                             low=low,
                                              high_log=high_log,
                                              base=base,
                                              step=step)
@@ -70,38 +72,38 @@ def test_lognormal_generator_step():
 
 
 def test_lognormal_pdf():
-    mu = 50
-    sigma = 20
-    low = 1
-    high = 100
+    mu = 10 ** 3.34
+    sigma = 10 ** 2
+    low = 10 ** 1.125
+    high = 10 ** 4.365
+    step = None
     base = 10
 
-    step = None
     size = 100000
-    bins = 10000
+    bins = 100
     epsilon = 1e-1
 
-    mu_log = logb(mu, base)
-    sigma_log = logb(sigma, base)
     low_log = logb(low, base)
     high_log = logb(high, base)
+    mu_log = logb(mu, base)
+    sigma_log = logb(sigma, base)
 
     samples = sample_generators["lognormal"](size=size,
                                              low=low,
                                              high=high,
-                                             base=base,
-                                             step=step,
                                              mu=mu,
+                                             sigma=sigma,
                                              mu_log=mu_log,
                                              sigma_log=sigma_log,
                                              low_log=low_log,
                                              high_log=high_log,
-                                             sigma=sigma)
+                                             step=step,
+                                             base=base)
     hist, bin_edges = np.histogram(samples, bins=bins, normed=True)
     densities = probability_density_function["lognormal"](
-        samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5,
-        low=low, high=high, low_log=low_log, high_log=high_log,
-        base=base, step=step, mu=mu, sigma=sigma, mu_log=mu_log, sigma_log=sigma_log)
+        samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5, low_log=low_log, high_log=high_log,
+        low=low, high=high, step=step, base=base, mu=mu, sigma=sigma, mu_log=mu_log,
+        sigma_log=sigma_log)
     assert np.sum(densities[samples < low]) == 0
     assert np.sum(densities[samples >= high]) == 0
     assert ((hist - densities) / densities).mean() <= epsilon
@@ -110,7 +112,7 @@ def test_lognormal_pdf():
 def test_lognormal_pdf_step():
     mu = 50
     sigma = 20
-    low = 1
+    low = 2
     high = 100
     base = 10
 

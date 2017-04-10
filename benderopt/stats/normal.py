@@ -15,7 +15,9 @@ def generate_samples_normal(mu,
     a, b = (low - mu) / sigma, (high - mu) / sigma
     samples = stats.truncnorm.rvs(a=a, b=b, size=size, loc=mu, scale=sigma)
 
-    if step:
+    if step and low != -np.inf:
+        samples = step * np.floor((samples - low) / step) + low
+    elif step and low == -np.inf:
         samples = step * np.floor(samples / step)
 
     return samples

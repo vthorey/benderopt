@@ -59,9 +59,9 @@ def parzen_estimator_build_posterior_parameter(parameter, observations):
         if parameter.category in ("loguniform", "lognormal"):
             tmp = np.concatenate(
                 (
-                    [search_space["low"]],
+                    [search_space["low_log"]],
                     logb(mus, search_space["base"]),
-                    [search_space["high"]],
+                    [search_space["high_log"]],
                 )
             )
         else:
@@ -127,23 +127,26 @@ class ParzenEstimator(BaseOptimizer):
                  batch=None,
                  gamma=0.15,
                  number_of_candidates=100,
-                 max_observation=30,
+                 subsampling=50,
+                 subsampling_type="best",
                  ):
         super(ParzenEstimator, self).__init__(optimization_problem,
                                               batch=batch)
 
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
+        self.subsampling = subsampling
+        self.subsampling_type = subsampling_type
 
     def _generate_samples(self, size):
         assert size < self.number_of_candidates
 
         # Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
-        subsample_observations = np.choice()
-        size = int(len(subsample_observations) * self.gamma)
         observations_l, observations_g = self.optimization_problem.observations_quantile(
-            self.gamma)
+            self.gamma,
+            subsampling=min(len(self.observations), self.subsampling),
+            subsampling_type=self.subsampling_type)
 
         # Build a sample going through every parameters
         samples = [{} for _ in range(size)]
