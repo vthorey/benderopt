@@ -29,7 +29,7 @@ def test_lognormal_generator():
         ]
     }
     size = 100000
-    epsilon = 1e-2
+    epsilon = 1e-1
 
     samples = sample_generators["mixture"](size=size, **search_space)
     theorical_mean = (

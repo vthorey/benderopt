@@ -25,7 +25,7 @@ def validate_lognormal(search_space):
     if type(search_space["sigma"]) not in (int, float):
         raise ValidationError(message_key="sigma_type")
 
-    if search_space["sigma"] <= 1:
+    if search_space["sigma"] < 1:
         raise ValidationError(message_key="sigma_inferior_1")
 
     if "low" in search_space.keys():

@@ -84,7 +84,7 @@ def test_random_uniform_step():
             "category": "uniform",
             "search_space": {
                 "low": 0,
-                "high": np.pi,
+                "high": 3.14,
                 "step": 0.01,
             }
         }
