@@ -1,3 +1,7 @@
+import numpy as np
+from benderopt.minimizer import minimize
+
+
 optimization_problem = [
     {
         "name": "x1",
@@ -122,3 +126,19 @@ best_sample = {
     "x4_step": 1.456e-5,
     "x5": "a"
 }
+
+
+def test_random_uniform():
+    np.random.seed(0)
+    minimize(function_to_optimize,
+             optimization_problem,
+             optimizer_type="random",
+             number_of_evaluation=5)
+
+
+def test_random_parzen_estimators():
+    np.random.seed(0)
+    minimize(function_to_optimize,
+             optimization_problem,
+             optimizer_type="parzen_estimator",
+             number_of_evaluation=5)
