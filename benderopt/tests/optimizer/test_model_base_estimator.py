@@ -22,7 +22,7 @@ def test_random_uniform():
 
     best_sample = minimize(f,
                            optimization_problem,
-                           optimizer_type="parzen_estimator",
+                           optimizer_type="model_base_estimator",
                            number_of_evaluation=100)
 
     assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1

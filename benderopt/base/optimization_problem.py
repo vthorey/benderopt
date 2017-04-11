@@ -85,10 +85,22 @@ class OptimizationProblem:
         return set([parameter.name for parameter in self.parameters])
 
     @property
+    def sorted_parameters_name(self):
+        return sorted([parameter.name for parameter in self.parameters])
+
+    @property
     def samples(self):
         if not hasattr(self, "_samples") or len(self._samples) != len(self.observations):
             self._samples = [observation.sample for observation in self.observations]
         return self._samples
+
+    @property
+    def dataset(self):
+        data = np.array([
+            [observation.sample[parameter_name]
+             for parameter_name in self.sorted_parameters_name] +
+            [observation.loss] for observation in self.observations])
+        return data[:, :-1], data[:, -1]
 
     @property
     def best_sample(self):

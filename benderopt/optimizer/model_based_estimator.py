@@ -1,11 +1,12 @@
 import numpy as np
-from ..base import Parameter
+from ..base import Parameter, OptimizationProblem
 from .optimizer import BaseOptimizer
 from benderopt.utils import logb
 from .random import RandomOptimizer
+from sklearn.ensemble import RandomForestRegressor
 
 
-class ParzenEstimator(BaseOptimizer):
+class ModelBasedEstimator(BaseOptimizer):
     """ Parzen Estimator
 
     https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization.pdf
@@ -26,11 +27,16 @@ class ParzenEstimator(BaseOptimizer):
                  number_of_candidates=100,
                  subsampling=50,
                  subsampling_type="random",
-                 prior_weight=0.2,
+                 prior_weight=0.5,
                  minimum_observations=30,
                  batch=None,
+                 random_forest_parameters={
+                     "n_estimators": 100,
+                     "max_depth": 5,
+                     "n_jobs": -1,
+                 }
                  ):
-        super(ParzenEstimator, self).__init__(optimization_problem, batch)
+        super(ModelBasedEstimator, self).__init__(optimization_problem, batch)
 
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
@@ -39,6 +45,7 @@ class ParzenEstimator(BaseOptimizer):
         self.prior_weight = prior_weight
         self.minimum_observations = minimum_observations
         self.batch = batch
+        self.random_forest_parameters = random_forest_parameters
 
     def _generate_samples(self, size):
         assert size < self.number_of_candidates
@@ -49,32 +56,30 @@ class ParzenEstimator(BaseOptimizer):
 
         # Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
-        observations_l, observations_g = self.optimization_problem.observations_quantile(
+        observations_l, _ = self.optimization_problem.observations_quantile(
             self.gamma,
             subsampling=min(len(self.observations), self.subsampling),
             subsampling_type=self.subsampling_type)
 
-        # Build a sample going through every parameters
-        samples = [{} for _ in range(size)]
-        for parameter in self.parameters:
+        # Build a posterior distribution according to best params and draw candidates from this
+        candidates = np.array(RandomOptimizer(
+            OptimizationProblem(
+                [self._build_posterior_parameter(parameter, observations_l)
+                 for parameter in self.parameters]), self.batch)._generate_samples(
+            self.number_of_candidates))
 
-            posterior_parameter_l = self._build_posterior_parameter(parameter,
-                                                                    observations_l)
-            posterior_parameter_g = self._build_posterior_parameter(parameter,
-                                                                    observations_g)
+        # Random forest Regressor trained on all observations.
+        clf = RandomForestRegressor(**self.random_forest_parameters)
 
-            # Draw candidates from observations_l
-            candidates = posterior_parameter_l.draw(self.number_of_candidates)
+        clf.fit(*self.optimization_problem.dataset)
 
-            # Evaluate cantidates score according to g / l taking care of zero division
-            scores = (posterior_parameter_g.pdf(candidates) /
-                      np.clip(posterior_parameter_l.pdf(candidates),
-                              a_min=1e-16,
-                              a_max=None))
-            sorted_candidates = candidates[np.argsort(scores)]
+        scores = clf.predict([
+            [candidate[parameter] for parameter in
+             self.optimization_problem.sorted_parameters_name] for candidate in candidates])
 
-            for i in range(size):
-                samples[i][parameter.name] = sorted_candidates[i]
+        sorted_candidates = candidates[np.argsort(scores)]
+
+        samples = sorted_candidates[:size]
 
         return samples
 
