@@ -141,4 +141,12 @@ def test_random_parzen_estimators():
     minimize(function_to_optimize,
              optimization_problem,
              optimizer_type="parzen_estimator",
-             number_of_evaluation=5)
+             number_of_evaluation=35)
+
+
+def test_random_model_base_estimator():
+    np.random.seed(0)
+    minimize(function_to_optimize,
+             optimization_problem,
+             optimizer_type="model_based_estimator",
+             number_of_evaluation=35)
