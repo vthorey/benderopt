@@ -115,7 +115,7 @@ def build_posterior_categorical(observed_values, parameter, prior_weight):
 
 def find_sigmas_mus(observed_mus, prior_mu, prior_sigma, low, high):
     # Mus
-    mus = np.sort(observed_mus + [prior_mu])
+    mus = np.sort(list(observed_mus)[:] + [prior_mu])
 
     # Sigmas
     # Trick to get for each mu the greater distance from left and right neighbor
@@ -136,10 +136,10 @@ def find_sigmas_mus(observed_mus, prior_mu, prior_sigma, low, high):
     sigmas = np.clip(sigmas, sigma_min_value, sigma_max_value)
 
     # Fix prior sigma with correct value
-    index_prior = np.where(mus == prior_mu)[0]
+    index_prior = np.where(mus == prior_mu)[0][0]
     sigmas[index_prior] = prior_sigma
 
-    return mus, sigmas, index_prior
+    return mus[:], sigmas[:], index_prior
 
 
 def build_posterior_uniform(observed_values, parameter, prior_weight):
@@ -211,7 +211,7 @@ def build_posterior_loguniform(observed_values, parameter, prior_weight):
             "search_space": {
                 "parameters": [
                     {
-                        "category": "normal",
+                        "category": "lognormal",
                         "search_space": {
                             "mu": mu.tolist(),
                             "sigma": sigma.tolist(),
@@ -301,7 +301,7 @@ def build_posterior_lognormal(observed_values, parameter, prior_weight):
             "search_space": {
                 "parameters": [
                     {
-                        "category": "normal",
+                        "category": "lognormal",
                         "search_space": {
                             "mu": mu.tolist(),
                             "sigma": sigma.tolist(),
