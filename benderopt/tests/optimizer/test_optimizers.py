@@ -127,6 +127,11 @@ best_sample = {
     "x5": "a"
 }
 
+best = minimize(function_to_optimize,
+                optimization_problem,
+                optimizer_type="parzen_estimator",
+                number_of_evaluation=200)
+
 
 def test_random_uniform():
     np.random.seed(0)
