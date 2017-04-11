@@ -42,6 +42,7 @@ class ParzenEstimator(BaseOptimizer):
     def _generate_samples(self, size):
         assert size < self.number_of_candidates
 
+        # If not enough observations, draw at random
         if self.optimization_problem.number_of_observations < self.minimum_observations:
             return RandomOptimizer(self.optimization_problem, self.batch)._generate_samples(size)
 
