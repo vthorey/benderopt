@@ -1,8 +1,7 @@
 import numpy as np
-from ..base import Parameter, OptimizationProblem
+from ..base import OptimizationProblem
 from .optimizer import BaseOptimizer
 from .parzen_estimator import parzen_estimator_build_posterior_parameter
-from benderopt.utils import logb
 from .random import RandomOptimizer
 from sklearn.ensemble import RandomForestRegressor
 
