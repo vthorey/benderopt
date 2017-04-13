@@ -85,8 +85,8 @@ class OptimizationProblem:
         return set([parameter.name for parameter in self.parameters])
 
     @property
-    def sorted_parameters_name(self):
-        return sorted([parameter.name for parameter in self.parameters])
+    def sorted_parameters(self):
+        return sorted(self.parameters, key=lambda x: x.name)
 
     @property
     def samples(self):
@@ -97,8 +97,8 @@ class OptimizationProblem:
     @property
     def dataset(self):
         data = np.array([
-            [observation.sample[parameter_name]
-             for parameter_name in self.sorted_parameters_name] +
+            [parameter.numeric_transform(observation.sample[parameter.name])
+             for parameter in self.sorted_parameters] +
             [observation.loss] for observation in self.observations])
         return data[:, :-1], data[:, -1]
 

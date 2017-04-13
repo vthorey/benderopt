@@ -75,8 +75,8 @@ class ModelBasedEstimator(BaseOptimizer):
         clf.fit(*self.optimization_problem.dataset)
 
         scores = clf.predict([
-            [candidate[parameter] for parameter in
-             self.optimization_problem.sorted_parameters_name] for candidate in candidates])
+            [parameter.numeric_transform(candidate[parameter.name]) for parameter in
+             self.optimization_problem.sorted_parameters] for candidate in candidates])
 
         sorted_candidates = candidates[np.argsort(scores)]
 
