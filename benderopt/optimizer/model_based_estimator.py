@@ -50,35 +50,35 @@ class ModelBasedEstimator(BaseOptimizer):
     def _generate_samples(self, size):
         assert size < self.number_of_candidates
 
-        # If not enough observations, draw at random
+        # 0. If not enough observations, draw at random
         if self.optimization_problem.number_of_observations < self.minimum_observations:
             return RandomOptimizer(self.optimization_problem, self.batch)._generate_samples(size)
 
+        # 1. Build a posterior distribution according to best observations and draw candidates from a
+        # mixture of this and apriori
         # Retrieve self.gamma % best observations (lowest loss) observations_l
-        # and worst obervations (greatest loss g) observations_g
         observations_l, _ = self.optimization_problem.observations_quantile(
             self.gamma,
             subsampling=min(len(self.observations), self.subsampling),
             subsampling_type=self.subsampling_type)
 
-        # Build a posterior distribution according to best params and draw candidates from this
         candidates = np.array(RandomOptimizer(
             OptimizationProblem(
                 [self._build_posterior_parameter(parameter, observations_l)
                  for parameter in self.parameters]), self.batch)._generate_samples(
             self.number_of_candidates))
 
-        # Random forest Regressor trained on all observations.
+        # 2. Random forest Regressor trained on all observations.
         clf = RandomForestRegressor(**self.random_forest_parameters)
-
         clf.fit(*self.optimization_problem.dataset)
 
+        # 3. Predict score of each candidated and select the best
         scores = clf.predict([
             [parameter.numeric_transform(candidate[parameter.name]) for parameter in
              self.optimization_problem.sorted_parameters] for candidate in candidates])
 
+        # Sort and select best
         sorted_candidates = candidates[np.argsort(scores)]
-
         samples = sorted_candidates[:size]
 
         return samples
