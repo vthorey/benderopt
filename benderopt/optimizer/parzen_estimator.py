@@ -43,34 +43,37 @@ class ParzenEstimator(BaseOptimizer):
     def _generate_samples(self, size):
         assert size < self.number_of_candidates
 
-        # If not enough observations, draw at random
+        # 0. If not enough observations, draw at random
         if self.optimization_problem.number_of_observations < self.minimum_observations:
             return RandomOptimizer(self.optimization_problem, self.batch)._generate_samples(size)
 
-        # Retrieve self.gamma % best observations (lowest loss) observations_l
+        # 0. Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
         observations_l, observations_g = self.optimization_problem.observations_quantile(
             self.gamma,
             subsampling=min(len(self.observations), self.subsampling),
             subsampling_type=self.subsampling_type)
 
-        # Build a sample going through every parameters
+        # 1. Build a sample going through every parameters
         samples = [{} for _ in range(size)]
         for parameter in self.parameters:
 
+            # 1.a Build empirical distribution of good observations and bad obsevations
             posterior_parameter_l = self._build_posterior_parameter(parameter,
                                                                     observations_l)
             posterior_parameter_g = self._build_posterior_parameter(parameter,
                                                                     observations_g)
 
-            # Draw candidates from observations_l
+            # 1.b Draw candidates from observations_l
             candidates = posterior_parameter_l.draw(self.number_of_candidates)
 
-            # Evaluate cantidates score according to g / l taking care of zero division
+            # 1.c Evaluate cantidates score according to g / l taking care of zero division
             scores = (posterior_parameter_g.pdf(candidates) /
                       np.clip(posterior_parameter_l.pdf(candidates),
                               a_min=1e-16,
                               a_max=None))
+
+            # Sort candidate and choose best
             sorted_candidates = candidates[np.argsort(scores)]
 
             for i in range(size):
