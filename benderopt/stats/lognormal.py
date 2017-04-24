@@ -88,8 +88,8 @@ def lognormal_pdf(samples,
             's': sigma_log * np.log(base),
             'scale': base ** mu_log,
         }
-        cdf_low = stats.lognorm.cdf(low_log, **parametrization)
-        cdf_high = stats.lognorm.cdf(high_log, **parametrization)
+        cdf_low = stats.lognorm.cdf(low, **parametrization)
+        cdf_high = stats.lognorm.cdf(high, **parametrization)
         values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)
 
     else:
