@@ -24,9 +24,9 @@ class ParzenEstimator(BaseOptimizer):
                  optimization_problem,
                  gamma=0.15,
                  number_of_candidates=100,
-                 subsampling=50,
+                 subsampling=100,
                  subsampling_type="random",
-                 prior_weight=0.2,
+                 prior_weight=0.05,
                  minimum_observations=30,
                  batch=None,
                  ):
