@@ -52,8 +52,8 @@ def test_uniform_pdf():
     densities = probability_density_function["uniform"](
         samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5,
         low=low, high=high, step=step)
-    assert np.sum(densities[samples < low]) == 0
-    assert np.sum(densities[samples >= high]) == 0
+    assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
+    assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert ((hist - densities) / densities).mean() <= epsilon
 
 
@@ -73,6 +73,6 @@ def test_uniform_step_pdf():
     densities = probability_density_function["uniform"](
         samples=bin_edges[0:-1] + step / 10,
         low=low, high=high, step=step)
-    assert np.sum(densities[samples < low]) == 0
-    assert np.sum(densities[samples >= high]) == 0
+    assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
+    assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert ((hist - densities) / densities).mean() <= epsilon
