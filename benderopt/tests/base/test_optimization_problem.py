@@ -26,7 +26,6 @@ def test_optimization_problem():
     assert optimization_problem.sorted_observations[0].sample == {"param1": "b", "param2": 1.05}
     assert optimization_problem.finite is False
     assert len(optimization_problem.find_observations({"param1": "b", "param2": 1.05})) == 1
-    assert optimization_problem.samples_unicity([{"param1": "b", "param2": 1.05}]).sum() == 1
     a, b = optimization_problem.observations_quantile(0.5)
     assert len(a) == 1
     assert len(b) == 2
@@ -73,7 +72,6 @@ def test_optimization_problem_from_list():
     assert optimization_problem.sorted_observations[0].sample == {"param1": "b", "param2": 1.05}
     assert optimization_problem.finite is False
     assert len(optimization_problem.find_observations({"param1": "b", "param2": 1.05})) == 1
-    assert optimization_problem.samples_unicity([{"param1": "b", "param2": 1.05}]).sum() == 1
     a, b = optimization_problem.observations_quantile(0.5)
     assert len(a) == 1
     assert len(b) == 2
