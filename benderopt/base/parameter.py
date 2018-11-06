@@ -24,12 +24,14 @@ class Parameter:
         return probability_density_function[self.category](samples=samples, **self.search_space)
 
     def numeric_transform(self, value):
+        """To convert categorical values to index"""
         value_transformed = value
         if self.category == "categorical":
             value_transformed = self.search_space["values"].index(value)
         return value_transformed
 
     def revert_numeric_transform(self, value):
+        """To convert categorical index to value"""
         value_transformed = value
         if self.category == "categorical":
             value = self.search_space["values"][value]
