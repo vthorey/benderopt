@@ -151,8 +151,11 @@ class OptimizationProblem:
                 else:
                     observations = []
                 sorted_observations = sorted(observations, key=lambda x: x.loss)
-            if subsampling_type == "best":
+            elif subsampling_type == "best":
                 sorted_observations = self.sorted_observations[:subsampling]
+            else:
+                raise NotImplementedError("subsampling method {} does not exist!".format(
+                    subsampling_type))
             size = int(len(sorted_observations) * quantile)
             observations_low, observations_high = (sorted_observations[:size],
                                                    sorted_observations[size:])
