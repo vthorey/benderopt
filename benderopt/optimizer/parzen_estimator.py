@@ -54,7 +54,7 @@ class ParzenEstimator(BaseOptimizer):
             subsampling=min(len(self.observations), self.subsampling),
             subsampling_type=self.subsampling_type)
 
-        # 1. Build a sample going through every parameters
+        # 1. Build by drawing a value for each parameter according to parzen estimation
         samples = [{} for _ in range(size)]
         for parameter in self.parameters:
 
@@ -82,24 +82,42 @@ class ParzenEstimator(BaseOptimizer):
         return samples
 
     def _build_posterior_parameter(self, parameter, observations):
-        observed_values = [observation.sample[parameter.name] for observation in observations]
-        return parzen_estimator_build_posterior_parameter[parameter.category](observed_values,
-                                                                              parameter,
-                                                                              self.prior_weight)
+        """Retrieve observed value for eache parameter."""
+        observed_values, observed_weights = zip(*[
+            (observation.sample[parameter.name], observation.weight)
+            for observation in observations
+        ])
+        return parzen_estimator_build_posterior_parameter[parameter.category](
+            observed_values=observed_values,
+            observed_weights=observed_weights,
+            parameter=parameter,
+            prior_weight=self.prior_weight,
+        )
 
 
-def build_posterior_categorical(observed_values, parameter, prior_weight):
-    """ TODO Compare mean (current implem) vs hyperopt approach."""
+def build_posterior_categorical(observed_values, observed_weights, parameter, prior_weight):
+    """Posterior for categorical parameters.
+
+    observed_probabilities are the weighted count of each possible value.
+    posterior_probabilities are the weighted sum of prior (initial search space).
+
+    TODO Compare mean (current implem) vs hyperopt approach."""
     posterior_parameter = None
     prior_probabilities = np.array(parameter.search_space["probabilities"])
     values = parameter.search_space["values"]
-    posterior_probabilities = prior_probabilities * prior_weight
-    if len(observed_values) != 0:
-        observed_probabilities = np.array([observed_values.count(value)
-                                           for value in values])
-        observed_probabilities = observed_probabilities / np.sum(observed_probabilities)
-        posterior_probabilities += observed_probabilities * (1 - prior_weight)
+    sum_observed_weights = sum(observed_weights)
+    if sum_observed_weights != 0:
+        observed_probabilities = np.array([
+            sum([observed_weight
+                 for observed_value, observed_weight in zip(observed_values, observed_weights)
+                 if observed_value == value]) / sum_observed_weights
+            for value in values
+        ])
 
+    posterior_probabilities = (prior_probabilities * prior_weight +
+                               observed_probabilities * (1 - prior_weight))
+
+    # Numerical safety to always have sum = 1
     posterior_probabilities /= sum(posterior_probabilities)
 
     # Build param
@@ -145,7 +163,7 @@ def find_sigmas_mus(observed_mus, prior_mu, prior_sigma, low, high):
     return mus[:], sigmas[:], index_prior
 
 
-def build_posterior_uniform(observed_values, parameter, prior_weight):
+def build_posterior_uniform(observed_values, observed_weights, parameter, prior_weight):
     low = parameter.search_space["low"]
     high = parameter.search_space["high"]
 
