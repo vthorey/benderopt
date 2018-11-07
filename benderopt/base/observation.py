@@ -17,7 +17,7 @@ class Observation:
             raise ValidationError(message="Sample is mandatory for an observation")
         if type(data["sample"]) != dict:
             raise ValidationError(message="Sample must be a dict of parameter_name/values")
-        return cls(data["sample"], data["loss"], data.get("weight"))
+        return cls(data["sample"], data["loss"], data.get("weight", 1))
 
     @property
     def parameters_name(self):
