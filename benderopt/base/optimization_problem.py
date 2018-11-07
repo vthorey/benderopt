@@ -166,9 +166,6 @@ class OptimizationProblem:
             observation for observation in self.observations if observation.sample == sample]
         return observations
 
-    def samples_unicity(self, samples):
-        return np.array([True if sample in self.samples else False for sample in samples])
-
     def get_best_k_samples(self, k):
         return sorted(self.observations, key=lambda x: x.loss)[:k]
 
