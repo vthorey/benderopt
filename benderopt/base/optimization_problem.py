@@ -109,12 +109,16 @@ class OptimizationProblem:
           - vector y of corresponding losses
 
         """
-        data = np.array([
-            [parameter.numeric_transform(observation.sample[parameter.name])
-             for parameter in self.sorted_parameters] +
-            [observation.loss] for observation in self.observations])
-        X, y = data[:, :-1], data[:, -1]
-        return X, y
+        data = [([parameter.numeric_transform(observation.sample[parameter.name])
+                  for parameter in self.sorted_parameters],
+                 observation.loss,
+                 observation.weight) for observation in self.observations]
+        X, y, sample_weight = zip(*data)
+        data = {
+            "X": np.array(X),
+            "y": np.array(y),
+            "sample_weight": np.array(sample_weight)}
+        return data
 
     @property
     def best_sample(self):
