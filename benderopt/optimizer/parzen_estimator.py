@@ -135,8 +135,11 @@ def build_posterior_categorical(observed_values, observed_weights, parameter, pr
 
 
 def find_sigmas_mus(observed_mus, prior_mu, prior_sigma, low, high):
+    """TODO when multiple values for prior index ??"""
     # Mus
-    mus = np.sort(list(observed_mus)[:] + [prior_mu])
+    unsorted_mus = np.array(list(observed_mus)[:] + [prior_mu])
+    index = np.argsort(unsorted_mus)
+    mus = unsorted_mus[index]
 
     # Sigmas
     # Trick to get for each mu the greater distance from left and right neighbor
@@ -157,13 +160,13 @@ def find_sigmas_mus(observed_mus, prior_mu, prior_sigma, low, high):
     sigmas = np.clip(sigmas, sigma_min_value, sigma_max_value)
 
     # Fix prior sigma with correct value
-    index_prior = np.where(mus == prior_mu)[0][0]
-    sigmas[index_prior] = prior_sigma
+    sigmas[index[-1]] = prior_sigma
 
-    return mus[:], sigmas[:], index_prior
+    return mus[:], sigmas[:], index
 
 
 def build_posterior_uniform(observed_values, observed_weights, parameter, prior_weight):
+    """TODO put doc here."""
     low = parameter.search_space["low"]
     high = parameter.search_space["high"]
 
@@ -172,12 +175,13 @@ def build_posterior_uniform(observed_values, observed_weights, parameter, prior_
     prior_sigma = (high - low)
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus, sigmas, index_prior = find_sigmas_mus(observed_mus=observed_values,
-                                               prior_mu=prior_mu,
-                                               prior_sigma=prior_sigma,
-                                               low=low,
-                                               high=high)
+    mus, sigmas, index = find_sigmas_mus(observed_mus=observed_values,
+                                         prior_mu=prior_mu,
+                                         prior_sigma=prior_sigma,
+                                         low=low,
+                                         high=high)
 
+    sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(
         {
             "name": parameter.name,
@@ -195,9 +199,8 @@ def build_posterior_uniform(observed_values, observed_weights, parameter, prior_
                         }
                     } for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": [(1 - prior_weight) / (len(mus) - 1) if index != index_prior
-                            else prior_weight
-                            for index in range(len(mus))]
+                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
+                                     for x in observed_weights] + [prior_weight])[index].tolist()
             }
         }
     )
@@ -205,7 +208,7 @@ def build_posterior_uniform(observed_values, observed_weights, parameter, prior_
     return posterior_parameter
 
 
-def build_posterior_loguniform(observed_values, parameter, prior_weight):
+def build_posterior_loguniform(observed_values, observed_weights, parameter, prior_weight):
     low_log = parameter.search_space["low_log"]
     high_log = parameter.search_space["high_log"]
     base = parameter.search_space["base"]
@@ -215,16 +218,17 @@ def build_posterior_loguniform(observed_values, parameter, prior_weight):
     prior_sigma_log = (high_log - low_log)
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus_log, sigmas_log, index_prior = find_sigmas_mus(observed_mus=logb(observed_values, base),
-                                                       prior_mu=prior_mu_log,
-                                                       prior_sigma=prior_sigma_log,
-                                                       low=low_log,
-                                                       high=high_log)
+    mus_log, sigmas_log, index = find_sigmas_mus(observed_mus=logb(observed_values, base),
+                                                 prior_mu=prior_mu_log,
+                                                 prior_sigma=prior_sigma_log,
+                                                 low=low_log,
+                                                 high=high_log)
 
     # Back from log scale
     mus = base ** mus_log
     sigmas = base ** sigmas_log
 
+    sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(
         {
             "name": parameter.name,
@@ -243,9 +247,8 @@ def build_posterior_loguniform(observed_values, parameter, prior_weight):
                         }
                     } for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": [(1 - prior_weight) / (len(mus) - 1) if index != index_prior
-                            else prior_weight
-                            for index in range(len(mus))]
+                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
+                                     for x in observed_weights] + [prior_weight])[index].tolist()
             }
         }
     )
@@ -253,7 +256,7 @@ def build_posterior_loguniform(observed_values, parameter, prior_weight):
     return posterior_parameter
 
 
-def build_posterior_normal(observed_values, parameter, prior_weight):
+def build_posterior_normal(observed_values, observed_weights, parameter, prior_weight):
     low = parameter.search_space["low"]
     high = parameter.search_space["high"]
 
@@ -262,12 +265,13 @@ def build_posterior_normal(observed_values, parameter, prior_weight):
     prior_sigma = parameter.search_space["sigma"]
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus, sigmas, index_prior = find_sigmas_mus(observed_mus=observed_values,
-                                               prior_mu=prior_mu,
-                                               prior_sigma=prior_sigma,
-                                               low=low,
-                                               high=high)
+    mus, sigmas, index = find_sigmas_mus(observed_mus=observed_values,
+                                         prior_mu=prior_mu,
+                                         prior_sigma=prior_sigma,
+                                         low=low,
+                                         high=high)
 
+    sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(
         {
             "name": parameter.name,
@@ -285,9 +289,8 @@ def build_posterior_normal(observed_values, parameter, prior_weight):
                         }
                     } for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": [(1 - prior_weight) / (len(mus) - 1) if index != index_prior
-                            else prior_weight
-                            for index in range(len(mus))]
+                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
+                                     for x in observed_weights] + [prior_weight])[index].tolist()
             }
         }
     )
@@ -295,7 +298,7 @@ def build_posterior_normal(observed_values, parameter, prior_weight):
     return posterior_parameter
 
 
-def build_posterior_lognormal(observed_values, parameter, prior_weight):
+def build_posterior_lognormal(observed_values, observed_weights, parameter, prior_weight):
     low_log = parameter.search_space["low_log"]
     high_log = parameter.search_space["high_log"]
     base = parameter.search_space["base"]
@@ -305,16 +308,17 @@ def build_posterior_lognormal(observed_values, parameter, prior_weight):
     prior_sigma_log = parameter.search_space["sigma_log"]
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus_log, sigmas_log, index_prior = find_sigmas_mus(observed_mus=logb(observed_values, base),
-                                                       prior_mu=prior_mu_log,
-                                                       prior_sigma=prior_sigma_log,
-                                                       low=low_log,
-                                                       high=high_log)
+    mus_log, sigmas_log, index = find_sigmas_mus(observed_mus=logb(observed_values, base),
+                                                 prior_mu=prior_mu_log,
+                                                 prior_sigma=prior_sigma_log,
+                                                 low=low_log,
+                                                 high=high_log)
 
     # Back from log scale
     mus = base ** mus_log
     sigmas = base ** sigmas_log
 
+    sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(
         {
             "name": parameter.name,
@@ -333,9 +337,8 @@ def build_posterior_lognormal(observed_values, parameter, prior_weight):
                         }
                     } for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": [(1 - prior_weight) / (len(mus) - 1) if index != index_prior
-                            else prior_weight
-                            for index in range(len(mus))]
+                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
+                                     for x in observed_weights] + [prior_weight])[index].tolist()
             }
         }
     )
