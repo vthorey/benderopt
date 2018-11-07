@@ -9,10 +9,10 @@ class OptimizationProblem:
     """ OptimizationProblem aims to
 
 
-    - Parameters have a category which is "categorical", "uniform", "normal"
-     and a search_space to define which values they can take.
+    - Parameters have a category which is "categorical", "uniform", "normal", "loguniform",
+    "lognormal" and a search_space to define which values they can take.
 
-    - Observations contains a drawing for each parameters and an observed loss
+    - Observations contains a sample which is a drawing for each parameters and an observed loss
 
 
     How to instantiate an OptimizationProblem
@@ -22,12 +22,12 @@ class OptimizationProblem:
     optimization_problem = OptimizationProblem.from_list({
         {
             "name": "param1",
-            "category": "categorical",
-            "search_space": {"values": [1, 2]}
+            "category": "category",
+            "search_space": {"values": ["a", "b"]}
         },
         {
             "name": "param1",
-            "category": "categorical",
+            "category": "normal",
             "search_space": {"values": [1, 2]}
         }
     })
@@ -57,6 +57,7 @@ class OptimizationProblem:
             },
     ],
     raise_exception=True)
+    raise_exception = False would just discard wrong observations.
 
      * from a observation object
 
@@ -73,37 +74,51 @@ class OptimizationProblem:
 
     def __init__(self, parameters):
         if type(parameters) != list:
-            raise ValidationError(message="parameters must be a list of Parameter")
+            raise ValidationError(message="'parameters' must be a list of Parameter")
         for parameter in parameters:
             if type(parameter) != Parameter:
-                raise ValidationError(message="parameters must be a list of Parameter")
+                raise ValidationError(message="'parameters' must be a list of Parameter")
+        if len(set([x.name for x in parameters])) != len(parameters):
+            raise ValidationError(message="Each parameter must have a different name")
         self.parameters = parameters.copy()
         self.observations = []
 
     @property
     def parameters_name(self):
+        """Return a set containing the name for each parameter."""
         return set([parameter.name for parameter in self.parameters])
 
     @property
     def sorted_parameters(self):
+        """Return a set containing the name for each parameter."""
         return sorted(self.parameters, key=lambda x: x.name)
 
     @property
     def samples(self):
+        """Return all the samples."""
         if not hasattr(self, "_samples") or len(self._samples) != len(self.observations):
             self._samples = [observation.sample for observation in self.observations]
         return self._samples
 
     @property
     def dataset(self):
+        """Create a dataset sample/loss
+
+        Return:
+          - matrix X with number_of_observations rows and number_of_parameters columns.
+          - vector y of corresponding losses
+
+        """
         data = np.array([
             [parameter.numeric_transform(observation.sample[parameter.name])
              for parameter in self.sorted_parameters] +
             [observation.loss] for observation in self.observations])
-        return data[:, :-1], data[:, -1]
+        X, y = data[:, :-1], data[:, -1]
+        return X, y
 
     @property
     def best_sample(self):
+        """Return the sample with the lowest loss."""
         sample = None
         if len(self.observations) > 0:
             sample = self.sorted_observations[0].sample
@@ -111,6 +126,7 @@ class OptimizationProblem:
 
     @property
     def sorted_observations(self):
+        """Observations ordered by increasing loss"""
         if (not hasattr(self, "_sorted_observations") or
                 len(self._sorted_observations) != len(self.observations)):
             self._sorted_observations = sorted(self.observations, key=lambda x: x.loss)
@@ -136,6 +152,13 @@ class OptimizationProblem:
         return len(self.observations)
 
     def observations_quantile(self, quantile, subsampling=None, subsampling_type="random"):
+        """Return observations int two lists lower than quantil and higher than quantile
+
+        subsampling: max number of observations to consider
+        subsampling_type:
+          - "random": select subsamples at random
+          - "best": select first subsampling best obersvations
+        """
         observations_low, observations_high = None, None
         if subsampling is None:
             size = int(self.number_of_observations * quantile)
@@ -162,6 +185,7 @@ class OptimizationProblem:
         return observations_low, observations_high
 
     def find_observations(self, sample):
+        """Find corresponding observation."""
         observations = [
             observation for observation in self.observations if observation.sample == sample]
         return observations
