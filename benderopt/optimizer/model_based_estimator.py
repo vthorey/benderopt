@@ -69,7 +69,7 @@ class ModelBasedEstimator(ParzenEstimator):
 
         # 2. Random forest Regressor trained on all observations.
         clf = RandomForestRegressor(**self.random_forest_parameters)
-        clf.fit(*self.optimization_problem.dataset)
+        clf.fit(**self.optimization_problem.dataset)
 
         # 3. Predict score of each candidated and select the best
         scores = clf.predict([
