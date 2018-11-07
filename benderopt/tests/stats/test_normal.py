@@ -69,7 +69,7 @@ def test_normal_pdf():
                                           step=step,
                                           mu=mu,
                                           sigma=sigma)
-    hist, bin_edges = np.histogram(samples, bins=bins, normed=True)
+    hist, bin_edges = np.histogram(samples, bins=bins, density=True)
     densities = probability_density_function["normal"](
         samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5,
         low=low, high=high, step=step, mu=mu, sigma=sigma)
@@ -96,7 +96,7 @@ def test_normal_pdf_step():
 
     hist, bin_edges = np.histogram(samples,
                                    bins=np.arange(low - step / 10, high, step),
-                                   normed=True)
+                                   density=True)
     densities = probability_density_function["normal"](
         samples=bin_edges[0:-1] + step / 10,
         low=low, high=high, step=step, mu=mu, sigma=sigma)

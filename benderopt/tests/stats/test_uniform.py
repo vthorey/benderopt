@@ -48,7 +48,7 @@ def test_uniform_pdf():
     bins = 1000
     epsilon = 1e-1
     samples = sample_generators["uniform"](size=size, low=low, high=high, step=step)
-    hist, bin_edges = np.histogram(samples, bins=bins, normed=True)
+    hist, bin_edges = np.histogram(samples, bins=bins, density=True)
     densities = probability_density_function["uniform"](
         samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5,
         low=low, high=high, step=step)
@@ -69,7 +69,7 @@ def test_uniform_step_pdf():
 
     hist, bin_edges = np.histogram(samples,
                                    bins=np.arange(low - step / 10, high, step),
-                                   normed=True)
+                                   density=True)
     densities = probability_density_function["uniform"](
         samples=bin_edges[0:-1] + step / 10,
         low=low, high=high, step=step)
