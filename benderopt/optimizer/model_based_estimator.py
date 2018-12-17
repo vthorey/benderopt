@@ -1,12 +1,11 @@
 import numpy as np
 from ..base import OptimizationProblem
-from .optimizer import BaseOptimizer
-from .parzen_estimator import parzen_estimator_build_posterior_parameter
+from .parzen_estimator import ParzenEstimator
 from .random import RandomOptimizer
 from sklearn.ensemble import RandomForestRegressor
 
 
-class ModelBasedEstimator(BaseOptimizer):
+class ModelBasedEstimator(ParzenEstimator):
     """ Parzen Estimator
 
     https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization.pdf
@@ -70,7 +69,7 @@ class ModelBasedEstimator(BaseOptimizer):
 
         # 2. Random forest Regressor trained on all observations.
         clf = RandomForestRegressor(**self.random_forest_parameters)
-        clf.fit(*self.optimization_problem.dataset)
+        clf.fit(**self.optimization_problem.dataset)
 
         # 3. Predict score of each candidated and select the best
         scores = clf.predict([
@@ -82,9 +81,3 @@ class ModelBasedEstimator(BaseOptimizer):
         samples = sorted_candidates[:size]
 
         return samples
-
-    def _build_posterior_parameter(self, parameter, observations):
-        observed_values = [observation.sample[parameter.name] for observation in observations]
-        return parzen_estimator_build_posterior_parameter[parameter.category](observed_values,
-                                                                              parameter,
-                                                                              self.prior_weight)

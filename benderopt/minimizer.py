@@ -1,6 +1,5 @@
 from benderopt.optimizer import optimizers
 from benderopt.base import OptimizationProblem, Observation
-import numpy as np
 
 
 def minimize(f,

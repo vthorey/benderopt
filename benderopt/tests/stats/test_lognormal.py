@@ -99,7 +99,7 @@ def test_lognormal_pdf():
                                              high_log=high_log,
                                              step=step,
                                              base=base)
-    hist, bin_edges = np.histogram(samples, bins=bins, normed=True)
+    hist, bin_edges = np.histogram(samples, bins=bins, density=True)
     densities = probability_density_function["lognormal"](
         samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5, low_log=low_log, high_log=high_log,
         low=low, high=high, step=step, base=base, mu=mu, sigma=sigma, mu_log=mu_log,
@@ -139,7 +139,7 @@ def test_lognormal_pdf_step():
 
     hist, bin_edges = np.histogram(samples,
                                    bins=np.arange(low - step / 10, high, step),
-                                   normed=True)
+                                   density=True)
     densities = probability_density_function["lognormal"](
         samples=bin_edges[0:-1] + step / 10,
         low=low,
