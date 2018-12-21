@@ -12,3 +12,24 @@ benderopt
 (Result is the loss)
     e.g.: ({"a": 0.3, "b": "lol}", 0.4, 1)
 
+`
+from benderopt import minimize
+
+def f(x):
+    return np.sin(x)
+
+optimization_problem = [
+    {
+        "name": "x",
+        "category": "uniform",
+        "search_space": {
+            "low": 0,
+            "high": 2 * np.pi,
+        }
+    }
+]
+
+best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
+
+print(best_sample["x"], 3 * np.pi / 2)
+`

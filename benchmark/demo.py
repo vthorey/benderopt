@@ -10,43 +10,49 @@ import numpy as np
 ​
 bender = Bender()
 map_size = 100
-nomansland = [ [ 0 for i in range(map_size) ] for j in range(map_size) ]
+nomansland = [[0 for i in range(map_size)] for j in range(map_size)]
 bombs = 800
 radius = 10
 sugestions = []
 n_suggestions = 200
 ​
+
+
 def init_bender():
   bender.create_experiment(
-    name='NoMansLand',
-    description='',
-    metrics=[{"metric_name": "altitude", "type": "loss"}],
-    dataset='my'
+      name='NoMansLand',
+      description='',
+      metrics=[{"metric_name": "altitude", "type": "loss"}],
+      dataset='my'
   )
   bender.create_algo(
-    name='Benchmark',
-    hyper_parameters= [
-      {
-        "name": 'x',
-        "category": "uniform",
-        "search_space": {
-          "low": 0,
-          "high": map_size,
-          "step": 1,
-        },
-      },
-      {
-        "name": 'y',
-        "category": "uniform",
-        "search_space": {
-          "low": 0,
-          "high": map_size,
-          "step": 1,
-        },
-      },
-    ]
+      name='Benchmark',
+      hyper_parameters=[
+          {
+              "name": 'x',
+              "category": "uniform",
+              "search_space": {
+                  "low": 0,
+                  "high": map_size,
+                  "step": 1,
+              },
+          },
+          {
+              "name": 'y',
+              "category": "uniform",
+              "search_space": {
+                  "low": 0,
+                  "high": map_size,
+                  "step": 1,
+              },
+          },
+      ]
   )
+
+
 ​
+
+
 def play_fortunate_son():
   for b in range(bombs):
     power = uniform(0, 1)
@@ -59,6 +65,8 @@ def play_fortunate_son():
           nomansland[y + j][x + i] = nomansland[y + j][x + i] - ease
         except IndexError:
           pass
+
+
 ​
 play_fortunate_son()
 init_bender()
@@ -67,8 +75,8 @@ for i in range(n_suggestions):
   s = bender.suggest(metric="altitude")
   sugestions.append(s)
   bender.create_trial(
-   hyper_parameters=s,
-   results={"altitude": float(nomansland[int(s["y"])][int(s["x"])])}
+      hyper_parameters=s,
+      results={"altitude": float(nomansland[int(s["y"])][int(s["x"])])}
   )
 with open("sugestions.json", "a") as myfile:
   myfile.write(json.dumps(sugestions, ensure_ascii=False))
@@ -84,39 +92,39 @@ for i in range(n_suggestions):
   Y.append(int(sugestions[i]["y"]))
   Z.append(float(nomansland[int(sugestions[i]["y"])][int(sugestions[i]["x"])]))
 trace2 = go.Scatter3d(
-  x=X,
-  y=Y,
-  z=Z,
-  mode='markers',
-  marker=dict(
-    color='rgb(255,255,0)',
-    size=2,
-    symbol='circle',
-    line=dict(
-      color='rgb(204, 204, 204)',
-      width=1
-    ),
-    opacity=1
-  )
+    x=X,
+    y=Y,
+    z=Z,
+    mode='markers',
+    marker=dict(
+        color='rgb(255,255,0)',
+        size=2,
+        symbol='circle',
+        line=dict(
+            color='rgb(204, 204, 204)',
+            width=1
+        ),
+        opacity=1
+    )
 )
 ​
 data = [
-  go.Surface(
-    z=nomansland
-  ),
-  trace2
+    go.Surface(
+        z=nomansland
+    ),
+    trace2
 ]
 layout = go.Layout(
-  title='No Mans Land',
-  autosize=False,
-  width=500,
-  height=500,
-  margin=dict(
-    l=65,
-    r=50,
-    b=65,
-    t=90
-  )
+    title='No Mans Land',
+    autosize=False,
+    width=500,
+    height=500,
+    margin=dict(
+        l=65,
+        r=50,
+        b=65,
+        t=90
+    )
 )
 fig = go.Figure(data=data, layout=layout)
 py.plot(fig, filename='elevations-3d-surface')

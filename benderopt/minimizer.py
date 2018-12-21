@@ -1,5 +1,6 @@
 from benderopt.optimizer import optimizers
 from benderopt.base import OptimizationProblem, Observation
+import numpy as np
 
 
 def minimize(f,
@@ -18,22 +19,21 @@ def minimize(f,
     return optimization_problem.best_sample
 
 
-# if __name__ == "__main__":
-#     def f(x):
-#         y = np.sin(x)
-#         return (y - 1) ** 2
+if __name__ == "__main__":
+    def f(x):
+        return np.sin(x)
 
-#     optimization_problem = [
-#         {
-#             "name": "x",
-#             "category": "normal",
-#             "search_space": {
-#                 "mu": np.pi / 2,
-#                 "sigma": 1,
-#                 "low": 0,
-#                 "high": np.pi,
-#             }
-#         }
-#     ]
+    optimization_problem = [
+        {
+            "name": "x",
+            "category": "uniform",
+            "search_space": {
+                "low": 0,
+                "high": 2 * np.pi,
+            }
+        }
+    ]
 
-#     best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
+    best_sample = minimize(f, optimization_problem, number_of_evaluation=100)
+
+    print(best_sample["x"], 3 * np.pi / 2)
