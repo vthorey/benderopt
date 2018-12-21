@@ -22,7 +22,7 @@ class ModelBasedEstimator(ParzenEstimator):
 
     def __init__(self,
                  optimization_problem,
-                 gamma=0.15,
+                 gamma=0.40,
                  number_of_candidates=100,
                  subsampling=50,
                  subsampling_type="random",
