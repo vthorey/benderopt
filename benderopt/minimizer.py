@@ -6,7 +6,10 @@ import numpy as np
 def minimize(f,
              optimization_problem,
              optimizer_type="parzen_estimator",
-             number_of_evaluation=100):
+             number_of_evaluation=100,
+             seed=None):
+
+    np.random.seed(seed=seed)
     if type(optimization_problem) == list:
         optimization_problem = OptimizationProblem.from_list(optimization_problem)
 
