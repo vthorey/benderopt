@@ -31,7 +31,7 @@ class ModelBasedEstimator(ParzenEstimator):
                  batch=None,
                  random_forest_parameters={
                      "n_estimators": 100,
-                     "max_depth": 5,
+                     "max_depth": 3,
                      "n_jobs": -1,
                  }
                  ):
