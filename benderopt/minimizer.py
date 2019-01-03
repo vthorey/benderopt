@@ -7,18 +7,24 @@ def minimize(f,
              optimization_problem,
              optimizer_type="parzen_estimator",
              number_of_evaluation=100,
-             seed=None):
+             seed=None,
+             debug=False,
+             ):
 
     np.random.seed(seed=seed)
     if type(optimization_problem) == list:
         optimization_problem = OptimizationProblem.from_list(optimization_problem)
 
+    samples = []
     for _ in range(number_of_evaluation):
         optimizer = optimizers[optimizer_type](optimization_problem)
         sample = optimizer.suggest()
+        samples.append(sample)
         loss = f(**sample)
         observation = Observation.from_dict({"loss": loss, "sample": sample})
         optimization_problem.add_observation(observation)
+    if debug is True:
+        return samples
     return optimization_problem.best_sample
 
 
