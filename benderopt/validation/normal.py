@@ -39,7 +39,8 @@ def validate_normal(search_space):
     if "step" in search_space.keys():
         if search_space["step"] and type(search_space["step"]) not in (int, float):
             raise ValidationError(message_key="step_type")
-        if search_space["step"] and search_space["step"] >= search_space["high"]:
+        if search_space["step"] and search_space["step"] >= max([np.abs(search_space["high"]),
+                                                                 np.abs(search_space["low"])]):
             raise ValidationError(message_key="high_inferior_step")
 
     search_space.setdefault("step", None)
