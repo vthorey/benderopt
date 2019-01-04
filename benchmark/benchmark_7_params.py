@@ -165,7 +165,6 @@ for n in number_of_trials:
     print("\nN:{}\n".format(n))
     print("Random: {}/{}".format(results["random"][n]["mean"], results["random"][n]["std"]))
     print("parzen: {}/{}".format(results["parzen_estimator"][n]["mean"], results["parzen_estimator"][n]["std"]))
-    print("model_: {}/{}".format(results["model_based_estimator"][n]["mean"], results["model_based_estimator"][n]["std"]))
 
 
 def test_random_uniform():

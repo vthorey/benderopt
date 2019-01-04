@@ -25,7 +25,7 @@ best_sample = {
 
 np.random.seed(0)
 seeds = np.random.randint(low=0, high=2 ** 31 - 1, size=5)
-methods = ["parzen_estimator", "model_based_estimator", "random"]
+methods = ["parzen_estimator", "random"]
 number_of_trials = [30, 50, 100, 200, 500]
 trials = {
     method: {
@@ -61,4 +61,3 @@ for n in number_of_trials:
     print("\nN:{}\n".format(n))
     print("Random: {}/{}".format(results["random"][n]["mean"], results["random"][n]["std"]))
     print("parzen: {}/{}".format(results["parzen_estimator"][n]["mean"], results["parzen_estimator"][n]["std"]))
-    print("model_: {}/{}".format(results["model_based_estimator"][n]["mean"], results["model_based_estimator"][n]["std"]))
