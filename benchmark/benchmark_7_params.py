@@ -130,7 +130,7 @@ best_sample = {
 
 np.random.seed(0)
 seeds = np.random.randint(low=0, high=2 ** 31 - 1, size=5)
-methods = ["parzen_estimator", "model_based_estimator", "random"]
+methods = ["parzen_estimator", "random"]
 number_of_trials = [30, 50, 100, 200, 500]
 trials = {
     method: {
@@ -165,27 +165,3 @@ for n in number_of_trials:
     print("\nN:{}\n".format(n))
     print("Random: {}/{}".format(results["random"][n]["mean"], results["random"][n]["std"]))
     print("parzen: {}/{}".format(results["parzen_estimator"][n]["mean"], results["parzen_estimator"][n]["std"]))
-
-
-def test_random_uniform():
-    np.random.seed(0)
-    minimize(function_to_optimize,
-             optimization_problem,
-             optimizer_type="random",
-             number_of_evaluation=5)
-
-
-def test_random_parzen_estimators():
-    np.random.seed(0)
-    minimize(function_to_optimize,
-             optimization_problem,
-             optimizer_type="parzen_estimator",
-             number_of_evaluation=35)
-
-
-def test_random_model_base_estimator():
-    np.random.seed(0)
-    minimize(function_to_optimize,
-             optimization_problem,
-             optimizer_type="model_based_estimator",
-             number_of_evaluation=35)
