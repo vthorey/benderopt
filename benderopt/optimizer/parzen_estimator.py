@@ -37,12 +37,12 @@ class ParzenEstimator(BaseOptimizer):
         self.prior_weight = prior_weight
         self.minimum_observations = minimum_observations
 
-    def _generate_samples(self, size):
+    def _generate_samples(self, size, debug=False):
         assert size < self.number_of_candidates
 
         # 0. If not enough observations, draw at random
         if self.optimization_problem.number_of_observations < self.minimum_observations:
-            return RandomOptimizer(self.optimization_problem)._generate_samples(size)
+            return RandomOptimizer(self.optimization_problem)._generate_samples(size), None, None
 
         # 0. Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
@@ -53,13 +53,17 @@ class ParzenEstimator(BaseOptimizer):
 
         # 1. Build by drawing a value for each parameter according to parzen estimation
         samples = [{} for _ in range(size)]
+        posterior_parameters_l = []
+        posterior_parameters_g = []
         for parameter in self.parameters:
 
             # 1.a Build empirical distribution of good observations and bad obsevations
             posterior_parameter_l = self._build_posterior_parameter(parameter,
                                                                     observations_l)
+            posterior_parameters_l.append(posterior_parameter_l)
             posterior_parameter_g = self._build_posterior_parameter(parameter,
                                                                     observations_g)
+            posterior_parameters_g.append(posterior_parameter_g)
 
             # 1.b Draw candidates from observations_l
             candidates = posterior_parameter_l.draw(self.number_of_candidates)
@@ -75,7 +79,8 @@ class ParzenEstimator(BaseOptimizer):
 
             for i in range(size):
                 samples[i][parameter.name] = sorted_candidates[i]
-
+        if debug:
+            return samples, posterior_parameters_l, posterior_parameters_g
         return samples
 
     def _build_posterior_parameter(self, parameter, observations):
