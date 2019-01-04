@@ -1,8 +1,7 @@
 class BaseOptimizer:
 
-    def __init__(self, optimization_problem, batch):
+    def __init__(self, optimization_problem):
         self.optimization_problem = optimization_problem
-        self.batch = batch
 
     @property
     def parameters(self):
@@ -12,10 +11,10 @@ class BaseOptimizer:
     def observations(self):
         return self.optimization_problem.observations
 
-    def suggest(self):
+    def suggest(self, size=None):
         results = None
-        if self.batch:
-            results = self._generate_samples(self.batch)
+        if size is not None:
+            results = self._generate_samples(size)
         else:
             results = self._generate_samples(1)[0]
         return results

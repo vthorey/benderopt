@@ -19,5 +19,5 @@ def test_base_optimize_ok():
     optimization_problem = OptimizationProblem.from_list(optimization_problem)
     optimizer = optimizers["random"](optimization_problem)
     assert optimizer.observations == optimization_problem.observations
-    optimizer = optimizers["random"](optimization_problem, batch=10)
-    assert len(optimizer.suggest()) == 10
+    optimizer = optimizers["random"](optimization_problem)
+    assert len(optimizer.suggest(10)) == 10

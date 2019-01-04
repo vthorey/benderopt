@@ -16,7 +16,6 @@ class ParzenEstimator(BaseOptimizer):
     subsampling_type: how to drow observations if number_of_observations > subsampling
     prior_weight: weight of prior when building posterior parameters
     minimum_observations: params will be drawn at random until minimum_observations is reached
-    batch: batch size
 
     """
 
@@ -28,9 +27,8 @@ class ParzenEstimator(BaseOptimizer):
                  subsampling_type="random",
                  prior_weight=0.05,
                  minimum_observations=30,
-                 batch=None,
                  ):
-        super(ParzenEstimator, self).__init__(optimization_problem, batch)
+        super(ParzenEstimator, self).__init__(optimization_problem)
 
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
@@ -38,14 +36,13 @@ class ParzenEstimator(BaseOptimizer):
         self.subsampling_type = subsampling_type
         self.prior_weight = prior_weight
         self.minimum_observations = minimum_observations
-        self.batch = batch
 
     def _generate_samples(self, size):
         assert size < self.number_of_candidates
 
         # 0. If not enough observations, draw at random
         if self.optimization_problem.number_of_observations < self.minimum_observations:
-            return RandomOptimizer(self.optimization_problem, self.batch)._generate_samples(size)
+            return RandomOptimizer(self.optimization_problem)._generate_samples(size)
 
         # 0. Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g

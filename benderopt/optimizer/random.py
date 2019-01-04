@@ -3,11 +3,8 @@ from .optimizer import BaseOptimizer
 
 class RandomOptimizer(BaseOptimizer):
 
-    def __init__(self,
-                 optimization_problem,
-                 batch=None):
-        super(RandomOptimizer, self).__init__(optimization_problem,
-                                              batch=batch)
+    def __init__(self, optimization_problem):
+        super(RandomOptimizer, self).__init__(optimization_problem)
 
     def _generate_samples(self, size):
         parameters = self.optimization_problem.parameters

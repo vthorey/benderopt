@@ -16,7 +16,6 @@ class ModelBasedEstimator(ParzenEstimator):
     subsampling_type: how to drow observations if number_of_observations > subsampling
     prior_weight: weight of prior when building posterior parameters
     minimum_observations: params will be drawn at random until minimum_observations is reached
-    batch: batch size
 
     """
 
@@ -28,14 +27,13 @@ class ModelBasedEstimator(ParzenEstimator):
                  subsampling_type="random",
                  prior_weight=0.5,
                  minimum_observations=30,
-                 batch=None,
                  random_forest_parameters={
                      "n_estimators": 100,
                      "max_depth": 3,
                      "n_jobs": -1,
                  }
                  ):
-        super(ModelBasedEstimator, self).__init__(optimization_problem, batch)
+        super(ModelBasedEstimator, self).__init__(optimization_problem)
 
         self.gamma = gamma
         self.number_of_candidates = number_of_candidates
@@ -43,7 +41,6 @@ class ModelBasedEstimator(ParzenEstimator):
         self.subsampling_type = subsampling_type
         self.prior_weight = prior_weight
         self.minimum_observations = minimum_observations
-        self.batch = batch
         self.random_forest_parameters = random_forest_parameters
 
     def _generate_samples(self, size):
@@ -51,7 +48,7 @@ class ModelBasedEstimator(ParzenEstimator):
 
         # 0. If not enough observations, draw at random
         if self.optimization_problem.number_of_observations < self.minimum_observations:
-            return RandomOptimizer(self.optimization_problem, self.batch)._generate_samples(size)
+            return RandomOptimizer(self.optimization_problem)._generate_samples(size)
 
         # 1. Build a posterior distribution according to best observations and draw candidates from a
         # mixture of this and apriori
@@ -64,7 +61,7 @@ class ModelBasedEstimator(ParzenEstimator):
         candidates = np.array(RandomOptimizer(
             OptimizationProblem(
                 [self._build_posterior_parameter(parameter, observations_l)
-                 for parameter in self.parameters]), self.batch)._generate_samples(
+                 for parameter in self.parameters]))._generate_samples(
             self.number_of_candidates))
 
         # 2. Random forest Regressor trained on all observations.
