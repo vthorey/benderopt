@@ -45,7 +45,7 @@ class ParzenEstimator(BaseOptimizer):
         if self.optimization_problem.number_of_observations < self.minimum_observations:
             samples = RandomOptimizer(self.optimization_problem)._generate_samples(size)
             if debug:
-                samples, None, None
+                return samples, None, None
             return samples
 
         # 0. Retrieve self.gamma % best observations (lowest loss) observations_l
