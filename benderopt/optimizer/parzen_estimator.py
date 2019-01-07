@@ -8,6 +8,7 @@ from .random import RandomOptimizer
 class ParzenEstimator(BaseOptimizer):
     """ Parzen Estimator
 
+    This estimator is largely inspired from TPE and hyperopt.
     https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization.pdf
 
     gamma: ratio of best observations to build lowest loss function
@@ -26,7 +27,7 @@ class ParzenEstimator(BaseOptimizer):
                  subsampling=100,
                  subsampling_type="random",
                  prior_weight=0.05,
-                 minimum_observations=30,
+                 minimum_observations=20,
                  ):
         super(ParzenEstimator, self).__init__(optimization_problem)
 
@@ -38,11 +39,14 @@ class ParzenEstimator(BaseOptimizer):
         self.minimum_observations = minimum_observations
 
     def _generate_samples(self, size, debug=False):
-        assert size < self.number_of_candidates
+        assert size < int(self.number_of_candidates / 3)
 
         # 0. If not enough observations, draw at random
         if self.optimization_problem.number_of_observations < self.minimum_observations:
-            return RandomOptimizer(self.optimization_problem)._generate_samples(size), None, None
+            samples = RandomOptimizer(self.optimization_problem)._generate_samples(size)
+            if debug:
+                samples, None, None
+            return samples
 
         # 0. Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
@@ -66,7 +70,10 @@ class ParzenEstimator(BaseOptimizer):
             posterior_parameters_g.append(posterior_parameter_g)
 
             # 1.b Draw candidates from observations_l
-            candidates = posterior_parameter_l.draw(self.number_of_candidates)
+            candidates = np.array([
+                x[parameter.name]
+                for x in RandomOptimizer(self.optimization_problem).suggest(
+                    self.number_of_candidates)])
 
             # 1.c Evaluate cantidates score according to g / l taking care of zero division
             scores = (posterior_parameter_g.pdf(candidates) /
@@ -75,10 +82,10 @@ class ParzenEstimator(BaseOptimizer):
                               a_max=None))
 
             # Sort candidate and choose best
-            sorted_candidates = candidates[np.argsort(scores)]
-
+            sorted_candidates = candidates[np.argsort(scores)][:int(self.number_of_candidates / 3)]
+            selected_candidates = np.random.choice(sorted_candidates, size=size, replace=False)
             for i in range(size):
-                samples[i][parameter.name] = sorted_candidates[i]
+                samples[i][parameter.name] = selected_candidates[i]
         if debug:
             return samples, posterior_parameters_l, posterior_parameters_g
         return samples
