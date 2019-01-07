@@ -6,7 +6,7 @@ from . import Observation, Parameter
 
 class OptimizationProblem:
 
-    """ OptimizationProblem aims to
+    """ OptimizationProblem
 
 
     - Parameters have a category which is "categorical", "uniform", "normal", "loguniform",
