@@ -91,7 +91,7 @@ optimization_problem_data = {
     "observations": [
         {
             "sample": {"parameter_1": 0.4, "parameter_2": "a"},
-            "loss": 0.1
+            "loss": 0.08
         },
         {
             "sample": {"parameter_1": 3.4, "parameter_2": "a"},
@@ -99,7 +99,7 @@ optimization_problem_data = {
         },
         {
             "sample": {"parameter_1": 4.1, "parameter_2": "c"},
-            "loss": 0.1
+            "loss": 0.45
         },
     ]
 }
