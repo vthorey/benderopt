@@ -19,7 +19,7 @@ class OptimizationProblem:
     =========================================
      * from list of parameters data
 
-    optimization_problem = OptimizationProblem.from_list({
+    optimization_problem = OptimizationProblem.from_list([
         {
             "name": "param1",
             "category": "category",
@@ -30,7 +30,7 @@ class OptimizationProblem:
             "category": "normal",
             "search_space": {"values": [1, 2]}
         }
-    })
+    ])
 
      * from a list of Parameter instance
     parameter1 = Parameter(name="param1", category="categorical", search_space={"values": ["a", "b"]})
