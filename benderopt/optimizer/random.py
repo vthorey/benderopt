@@ -2,7 +2,6 @@ from .optimizer import BaseOptimizer
 
 
 class RandomOptimizer(BaseOptimizer):
-
     def __init__(self, optimization_problem):
         super(RandomOptimizer, self).__init__(optimization_problem)
 
@@ -13,9 +12,4 @@ class RandomOptimizer(BaseOptimizer):
             for parameter in self.optimization_problem.parameters
         ]
         names = [parameter.name for parameter in parameters]
-        return [
-            {
-                names[i]: value
-                for i, value in enumerate(draw)
-            } for draw in zip(*draws)
-        ]
+        return [{names[i]: value for i, value in enumerate(draw)} for draw in zip(*draws)]

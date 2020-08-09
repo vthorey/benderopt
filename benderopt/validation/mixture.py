@@ -44,17 +44,22 @@ def validate_mixture(search_space):
             raise ValidationError(message="'category' not recognized for parameter {}".format(i))
 
         if "search_space" not in parameter.keys():
-            raise ValidationError(message=mandatory_key("search_space") + " in parameter {}".format(i))
+            raise ValidationError(
+                message=mandatory_key("search_space") + " in parameter {}".format(i)
+            )
 
         if type(parameter["search_space"]) != dict:
-            raise ValidationError(message=ValidationError.error_messages["search_space_type"] + " in parameter {}".format(i))
+            raise ValidationError(
+                message=ValidationError.error_messages["search_space_type"]
+                + " in parameter {}".format(i)
+            )
 
         try:
             search_space["parameters"][i]["search_space"] = validate_search_space[
-                parameter["category"]](parameter["search_space"])
+                parameter["category"]
+            ](parameter["search_space"])
         except ValidationError as e:
-            raise ValidationError(
-                message="{} for parameter {}".format(e.args[0], i))
+            raise ValidationError(message="{} for parameter {}".format(e.args[0], i))
 
     if "weights" in search_space.keys():
         if type(search_space["weights"]) != list:
@@ -66,14 +71,13 @@ def validate_mixture(search_space):
     # Lazy test for summing to 1 (avoiding numerical rounding)
     if "weights" in search_space.keys():
         try:
-            np.random.choice(range(len(search_space["weights"])),
-                             p=search_space["weights"])
+            np.random.choice(range(len(search_space["weights"])), p=search_space["weights"])
         except ValueError:
             raise ValidationError(message_key="weights_sum")
 
     search_space.setdefault(
-        "weights",
-        list(np.ones(len(search_space["parameters"])) / len(search_space["parameters"])))
+        "weights", list(np.ones(len(search_space["parameters"])) / len(search_space["parameters"]))
+    )
 
     return search_space
 

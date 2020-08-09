@@ -1,5 +1,4 @@
 class BaseOptimizer:
-
     def __init__(self, optimization_problem):
         self.optimization_problem = optimization_problem
 

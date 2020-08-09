@@ -25,14 +25,15 @@ def validate_categorical(search_space):
     # Lazy test for summing to 1 (avoiding numerical rounding)
     if "probabilities" in search_space.keys():
         try:
-            np.random.choice(range(len(search_space["probabilities"])),
-                             p=search_space["probabilities"])
+            np.random.choice(
+                range(len(search_space["probabilities"])), p=search_space["probabilities"]
+            )
         except ValueError:
             raise ValidationError(message_key="probabilities_sum")
 
     search_space.setdefault(
-        "probabilities",
-        list(np.ones(len(search_space["values"])) / len(search_space["values"])))
+        "probabilities", list(np.ones(len(search_space["values"])) / len(search_space["values"]))
+    )
 
     return search_space
 

@@ -24,18 +24,26 @@ probability_density_function_base = {
 
 
 def generate_samples_mixture(parameters, weights, size):
-    selected_parameter = random.choice(range(len(parameters)),
-                                       p=weights,
-                                       size=size)
-    return np.concatenate([
-        sample_generators_base[parameter["category"]](size=np.sum(selected_parameter == i),
-                                                      **parameter["search_space"])
-        for i, parameter in enumerate(parameters)
-    ])
+    selected_parameter = random.choice(range(len(parameters)), p=weights, size=size)
+    return np.concatenate(
+        [
+            sample_generators_base[parameter["category"]](
+                size=np.sum(selected_parameter == i), **parameter["search_space"]
+            )
+            for i, parameter in enumerate(parameters)
+        ]
+    )
 
 
 def mixture_pdf(samples, parameters, weights):
-    value = np.sum([probability_density_function_base[parameter["category"]](
-        samples=samples, **parameter["search_space"]) * weight
-        for parameter, weight in zip(parameters, weights)], axis=0)
+    value = np.sum(
+        [
+            probability_density_function_base[parameter["category"]](
+                samples=samples, **parameter["search_space"]
+            )
+            * weight
+            for parameter, weight in zip(parameters, weights)
+        ],
+        axis=0,
+    )
     return value

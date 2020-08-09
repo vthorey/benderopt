@@ -10,19 +10,11 @@ def f(x):
 def test_random_uniform():
 
     optimization_problem = [
-        {
-            "name": "x",
-            "category": "uniform",
-            "search_space": {
-                "low": 0,
-                "high": np.pi,
-            }
-        }
+        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": np.pi,}}
     ]
 
-    best_sample = minimize(f,
-                           optimization_problem,
-                           optimizer_type="parzen_estimator",
-                           number_of_evaluation=100)
+    best_sample = minimize(
+        f, optimization_problem, optimizer_type="parzen_estimator", number_of_evaluation=100
+    )
 
     assert np.abs(best_sample["x"] - (np.pi / 2)) < 0.1

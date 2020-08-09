@@ -22,14 +22,19 @@ def test_lognormal_generator():
     sigma_log = logb(sigma, base)
     low_log = logb(low, base)
     high_log = logb(high, base)
-    samples = logb(sample_generators["lognormal"](size=size,
-                                                  mu_log=mu_log,
-                                                  sigma_log=sigma_log,
-                                                  low_log=low_log,
-                                                  low=low,
-                                                  high_log=high_log,
-                                                  base=base,
-                                                  step=step), base)
+    samples = logb(
+        sample_generators["lognormal"](
+            size=size,
+            mu_log=mu_log,
+            sigma_log=sigma_log,
+            low_log=low_log,
+            low=low,
+            high_log=high_log,
+            base=base,
+            step=step,
+        ),
+        base,
+    )
     a = (low_log - mu_log) / sigma_log
     b = (high_log - mu_log) / sigma_log
     # Median
@@ -57,14 +62,16 @@ def test_lognormal_generator_step():
     sigma_log = logb(sigma, base)
     low_log = logb(low, base)
     high_log = logb(high, base)
-    samples = sample_generators["lognormal"](size=size,
-                                             mu_log=mu_log,
-                                             sigma_log=sigma_log,
-                                             low_log=low_log,
-                                             low=low,
-                                             high_log=high_log,
-                                             base=base,
-                                             step=step)
+    samples = sample_generators["lognormal"](
+        size=size,
+        mu_log=mu_log,
+        sigma_log=sigma_log,
+        low_log=low_log,
+        low=low,
+        high_log=high_log,
+        base=base,
+        step=step,
+    )
 
     assert np.sum(samples % 2) == 0
     assert np.sum(samples < low) == 0
@@ -88,22 +95,33 @@ def test_lognormal_pdf():
     mu_log = logb(mu, base)
     sigma_log = logb(sigma, base)
 
-    samples = sample_generators["lognormal"](size=size,
-                                             low=low,
-                                             high=high,
-                                             mu=mu,
-                                             sigma=sigma,
-                                             mu_log=mu_log,
-                                             sigma_log=sigma_log,
-                                             low_log=low_log,
-                                             high_log=high_log,
-                                             step=step,
-                                             base=base)
+    samples = sample_generators["lognormal"](
+        size=size,
+        low=low,
+        high=high,
+        mu=mu,
+        sigma=sigma,
+        mu_log=mu_log,
+        sigma_log=sigma_log,
+        low_log=low_log,
+        high_log=high_log,
+        step=step,
+        base=base,
+    )
     hist, bin_edges = np.histogram(samples, bins=bins, density=True)
     densities = probability_density_function["lognormal"](
-        samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5, low_log=low_log, high_log=high_log,
-        low=low, high=high, step=step, base=base, mu=mu, sigma=sigma, mu_log=mu_log,
-        sigma_log=sigma_log)
+        samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5,
+        low_log=low_log,
+        high_log=high_log,
+        low=low,
+        high=high,
+        step=step,
+        base=base,
+        mu=mu,
+        sigma=sigma,
+        mu_log=mu_log,
+        sigma_log=sigma_log,
+    )
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert ((hist - densities) / densities).mean() <= epsilon
@@ -125,21 +143,23 @@ def test_lognormal_pdf_step():
     low_log = logb(low, base)
     high_log = logb(high, base)
 
-    samples = sample_generators["lognormal"](size=size,
-                                             low=low,
-                                             high=high,
-                                             base=base,
-                                             step=step,
-                                             mu=mu,
-                                             mu_log=mu_log,
-                                             sigma_log=sigma_log,
-                                             low_log=low_log,
-                                             high_log=high_log,
-                                             sigma=sigma)
+    samples = sample_generators["lognormal"](
+        size=size,
+        low=low,
+        high=high,
+        base=base,
+        step=step,
+        mu=mu,
+        mu_log=mu_log,
+        sigma_log=sigma_log,
+        low_log=low_log,
+        high_log=high_log,
+        sigma=sigma,
+    )
 
-    hist, bin_edges = np.histogram(samples,
-                                   bins=np.arange(low - step / 10, high, step),
-                                   density=True)
+    hist, bin_edges = np.histogram(
+        samples, bins=np.arange(low - step / 10, high, step), density=True
+    )
     densities = probability_density_function["lognormal"](
         samples=bin_edges[0:-1] + step / 10,
         low=low,
@@ -151,7 +171,8 @@ def test_lognormal_pdf_step():
         low_log=low_log,
         high_log=high_log,
         mu=mu,
-        sigma=sigma)
+        sigma=sigma,
+    )
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert ((hist - densities) / densities).mean() <= epsilon

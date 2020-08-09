@@ -14,7 +14,7 @@ def test_uniform_search_space_ok():
 
 
 def test_uniform_search_space_not_dict():
-    search_space = [-5, 5],
+    search_space = ([-5, 5],)
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
@@ -69,11 +69,7 @@ def test_uniform_search_space_bad_low_high():
 
 
 def test_uniform_search_space_bad_step():
-    search_space = {
-        "low": 0,
-        "high": 5,
-        "step": [1]
-    }
+    search_space = {"low": 0, "high": 5, "step": [1]}
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)

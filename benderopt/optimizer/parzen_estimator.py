@@ -20,15 +20,16 @@ class ParzenEstimator(BaseOptimizer):
 
     """
 
-    def __init__(self,
-                 optimization_problem,
-                 gamma=0.15,
-                 number_of_candidates=100,
-                 subsampling=100,
-                 subsampling_type="random",
-                 prior_weight=0.05,
-                 minimum_observations=20,
-                 ):
+    def __init__(
+        self,
+        optimization_problem,
+        gamma=0.15,
+        number_of_candidates=100,
+        subsampling=100,
+        subsampling_type="random",
+        prior_weight=0.05,
+        minimum_observations=20,
+    ):
         super(ParzenEstimator, self).__init__(optimization_problem)
 
         self.gamma = gamma
@@ -53,7 +54,8 @@ class ParzenEstimator(BaseOptimizer):
         observations_l, observations_g = self.optimization_problem.observations_quantile(
             self.gamma,
             subsampling=min(len(self.observations), self.subsampling),
-            subsampling_type=self.subsampling_type)
+            subsampling_type=self.subsampling_type,
+        )
 
         # 1. Build by drawing a value for each parameter according to parzen estimation
         samples = [{} for _ in range(size)]
@@ -62,27 +64,28 @@ class ParzenEstimator(BaseOptimizer):
         for parameter in self.parameters:
 
             # 1.a Build empirical distribution of good observations and bad obsevations
-            posterior_parameter_l = self._build_posterior_parameter(parameter,
-                                                                    observations_l)
+            posterior_parameter_l = self._build_posterior_parameter(parameter, observations_l)
             posterior_parameters_l.append(posterior_parameter_l)
-            posterior_parameter_g = self._build_posterior_parameter(parameter,
-                                                                    observations_g)
+            posterior_parameter_g = self._build_posterior_parameter(parameter, observations_g)
             posterior_parameters_g.append(posterior_parameter_g)
 
             # 1.b Draw candidates from observations_l
-            candidates = np.array([
-                x[parameter.name]
-                for x in RandomOptimizer(self.optimization_problem).suggest(
-                    self.number_of_candidates)])
+            candidates = np.array(
+                [
+                    x[parameter.name]
+                    for x in RandomOptimizer(self.optimization_problem).suggest(
+                        self.number_of_candidates
+                    )
+                ]
+            )
 
             # 1.c Evaluate cantidates score according to g / l taking care of zero division
-            scores = (posterior_parameter_g.pdf(candidates) /
-                      np.clip(posterior_parameter_l.pdf(candidates),
-                              a_min=1e-16,
-                              a_max=None))
+            scores = posterior_parameter_g.pdf(candidates) / np.clip(
+                posterior_parameter_l.pdf(candidates), a_min=1e-16, a_max=None
+            )
 
             # Sort candidate and choose best
-            sorted_candidates = candidates[np.argsort(scores)][:int(self.number_of_candidates / 3)]
+            sorted_candidates = candidates[np.argsort(scores)][: int(self.number_of_candidates / 3)]
             selected_candidates = np.random.choice(sorted_candidates, size=size, replace=False)
             for i in range(size):
                 samples[i][parameter.name] = selected_candidates[i]
@@ -92,10 +95,12 @@ class ParzenEstimator(BaseOptimizer):
 
     def _build_posterior_parameter(self, parameter, observations):
         """Retrieve observed value for eache parameter."""
-        observed_values, observed_weights = zip(*[
-            (observation.sample[parameter.name], observation.weight)
-            for observation in observations
-        ])
+        observed_values, observed_weights = zip(
+            *[
+                (observation.sample[parameter.name], observation.weight)
+                for observation in observations
+            ]
+        )
         return parzen_estimator_build_posterior_parameter[parameter.category](
             observed_values=observed_values,
             observed_weights=observed_weights,
@@ -116,15 +121,25 @@ def build_posterior_categorical(observed_values, observed_weights, parameter, pr
     values = parameter.search_space["values"]
     sum_observed_weights = sum(observed_weights)
     if sum_observed_weights != 0:
-        observed_probabilities = np.array([
-            sum([observed_weight
-                 for observed_value, observed_weight in zip(observed_values, observed_weights)
-                 if observed_value == value]) / sum_observed_weights
-            for value in values
-        ])
+        observed_probabilities = np.array(
+            [
+                sum(
+                    [
+                        observed_weight
+                        for observed_value, observed_weight in zip(
+                            observed_values, observed_weights
+                        )
+                        if observed_value == value
+                    ]
+                )
+                / sum_observed_weights
+                for value in values
+            ]
+        )
 
-    posterior_probabilities = (prior_probabilities * prior_weight +
-                               observed_probabilities * (1 - prior_weight))
+    posterior_probabilities = prior_probabilities * prior_weight + observed_probabilities * (
+        1 - prior_weight
+    )
 
     # Numerical safety to always have sum = 1
     posterior_probabilities /= sum(posterior_probabilities)
@@ -134,10 +149,7 @@ def build_posterior_categorical(observed_values, observed_weights, parameter, pr
         {
             "name": parameter.name,
             "category": "categorical",
-            "search_space": {
-                "values": values,
-                "probabilities": list(posterior_probabilities),
-            }
+            "search_space": {"values": values, "probabilities": list(posterior_probabilities),},
         }
     )
     return posterior_parameter
@@ -155,11 +167,7 @@ def find_sigmas_mus(observed_mus, prior_mu, prior_sigma, low, high):
     # when low and high are not defined we use inf to get the only available distance
     # (right neighbor for sigmas[0] and left for sigmas[-1])
     tmp = np.concatenate(
-        (
-            [low if low != -np.inf else np.inf],
-            mus,
-            [high if high != np.inf else -np.inf],
-        )
+        ([low if low != -np.inf else np.inf], mus, [high if high != np.inf else -np.inf],)
     )
     sigmas = np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1])
 
@@ -181,14 +189,12 @@ def build_posterior_uniform(observed_values, observed_weights, parameter, prior_
 
     # build prior mu and sigma
     prior_mu = 0.5 * (high + low)
-    prior_sigma = (high - low)
+    prior_sigma = high - low
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus, sigmas, index = find_sigmas_mus(observed_mus=observed_values,
-                                         prior_mu=prior_mu,
-                                         prior_sigma=prior_sigma,
-                                         low=low,
-                                         high=high)
+    mus, sigmas, index = find_sigmas_mus(
+        observed_mus=observed_values, prior_mu=prior_mu, prior_sigma=prior_sigma, low=low, high=high
+    )
 
     sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(
@@ -204,13 +210,16 @@ def build_posterior_uniform(observed_values, observed_weights, parameter, prior_
                             "sigma": sigma.tolist(),
                             "low": low,
                             "high": high,
-                            "step": parameter.search_space.get("step", None)
-                        }
-                    } for mu, sigma in zip(mus, sigmas)
+                            "step": parameter.search_space.get("step", None),
+                        },
+                    }
+                    for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
-                                     for x in observed_weights] + [prior_weight])[index].tolist()
-            }
+                "weights": np.array(
+                    [x * (1 - prior_weight) / sum_observed_weights for x in observed_weights]
+                    + [prior_weight]
+                )[index].tolist(),
+            },
         }
     )
 
@@ -224,14 +233,16 @@ def build_posterior_loguniform(observed_values, observed_weights, parameter, pri
 
     # build log prior mu and sigma
     prior_mu_log = 0.5 * (high_log + low_log)
-    prior_sigma_log = (high_log - low_log)
+    prior_sigma_log = high_log - low_log
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus_log, sigmas_log, index = find_sigmas_mus(observed_mus=logb(observed_values, base),
-                                                 prior_mu=prior_mu_log,
-                                                 prior_sigma=prior_sigma_log,
-                                                 low=low_log,
-                                                 high=high_log)
+    mus_log, sigmas_log, index = find_sigmas_mus(
+        observed_mus=logb(observed_values, base),
+        prior_mu=prior_mu_log,
+        prior_sigma=prior_sigma_log,
+        low=low_log,
+        high=high_log,
+    )
 
     # Back from log scale
     mus = base ** mus_log
@@ -253,12 +264,15 @@ def build_posterior_loguniform(observed_values, observed_weights, parameter, pri
                             "high": parameter.search_space["high"],
                             "step": parameter.search_space["step"],
                             "base": parameter.search_space["base"],
-                        }
-                    } for mu, sigma in zip(mus, sigmas)
+                        },
+                    }
+                    for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
-                                     for x in observed_weights] + [prior_weight])[index].tolist()
-            }
+                "weights": np.array(
+                    [x * (1 - prior_weight) / sum_observed_weights for x in observed_weights]
+                    + [prior_weight]
+                )[index].tolist(),
+            },
         }
     )
 
@@ -274,11 +288,9 @@ def build_posterior_normal(observed_values, observed_weights, parameter, prior_w
     prior_sigma = parameter.search_space["sigma"]
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus, sigmas, index = find_sigmas_mus(observed_mus=observed_values,
-                                         prior_mu=prior_mu,
-                                         prior_sigma=prior_sigma,
-                                         low=low,
-                                         high=high)
+    mus, sigmas, index = find_sigmas_mus(
+        observed_mus=observed_values, prior_mu=prior_mu, prior_sigma=prior_sigma, low=low, high=high
+    )
 
     sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(
@@ -294,13 +306,16 @@ def build_posterior_normal(observed_values, observed_weights, parameter, prior_w
                             "sigma": sigma.tolist(),
                             "low": low,
                             "high": high,
-                            "step": parameter.search_space.get("step", None)
-                        }
-                    } for mu, sigma in zip(mus, sigmas)
+                            "step": parameter.search_space.get("step", None),
+                        },
+                    }
+                    for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
-                                     for x in observed_weights] + [prior_weight])[index].tolist()
-            }
+                "weights": np.array(
+                    [x * (1 - prior_weight) / sum_observed_weights for x in observed_weights]
+                    + [prior_weight]
+                )[index].tolist(),
+            },
         }
     )
 
@@ -317,11 +332,13 @@ def build_posterior_lognormal(observed_values, observed_weights, parameter, prio
     prior_sigma_log = parameter.search_space["sigma_log"]
 
     # Build mus and sigmas centered on each observation, taking care of the prior
-    mus_log, sigmas_log, index = find_sigmas_mus(observed_mus=logb(observed_values, base),
-                                                 prior_mu=prior_mu_log,
-                                                 prior_sigma=prior_sigma_log,
-                                                 low=low_log,
-                                                 high=high_log)
+    mus_log, sigmas_log, index = find_sigmas_mus(
+        observed_mus=logb(observed_values, base),
+        prior_mu=prior_mu_log,
+        prior_sigma=prior_sigma_log,
+        low=low_log,
+        high=high_log,
+    )
 
     # Back from log scale
     mus = base ** mus_log
@@ -343,12 +360,15 @@ def build_posterior_lognormal(observed_values, observed_weights, parameter, prio
                             "high": parameter.search_space["high"],
                             "step": parameter.search_space["step"],
                             "base": parameter.search_space["base"],
-                        }
-                    } for mu, sigma in zip(mus, sigmas)
+                        },
+                    }
+                    for mu, sigma in zip(mus, sigmas)
                 ],
-                "weights": np.array([x * (1 - prior_weight) / sum_observed_weights
-                                     for x in observed_weights] + [prior_weight])[index].tolist()
-            }
+                "weights": np.array(
+                    [x * (1 - prior_weight) / sum_observed_weights for x in observed_weights]
+                    + [prior_weight]
+                )[index].tolist(),
+            },
         }
     )
 

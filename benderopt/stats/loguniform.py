@@ -58,17 +58,10 @@ def loguniform_pdf(samples, low, low_log, high, high_log, base, step):
     if step is None:
         values = 1 / ((high_log - low_log) * samples * np.log(base))
     else:
-        values = (loguniform_cdf(samples + step,
-                                 low=low,
-                                 low_log=low_log,
-                                 high=high,
-                                 high_log=high_log,
-                                 base=base) -
-                  loguniform_cdf(samples,
-                                 low=low,
-                                 low_log=low_log,
-                                 high=high,
-                                 high_log=high_log,
-                                 base=base))
+        values = loguniform_cdf(
+            samples + step, low=low, low_log=low_log, high=high, high_log=high_log, base=base
+        ) - loguniform_cdf(
+            samples, low=low, low_log=low_log, high=high, high_log=high_log, base=base
+        )
     values[(samples < low) + (samples >= high)] = 0
     return values

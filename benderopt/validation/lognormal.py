@@ -48,8 +48,9 @@ def validate_lognormal(search_space):
     if "step" in search_space.keys():
         if search_space["step"] and type(search_space["step"]) not in (int, float):
             raise ValidationError(message_key="step_type")
-        if search_space["step"] and search_space["step"] >= max([np.abs(search_space["high"]),
-                                                                 np.abs(search_space["low"])]):
+        if search_space["step"] and search_space["step"] >= max(
+            [np.abs(search_space["high"]), np.abs(search_space["low"])]
+        ):
             raise ValidationError(message_key="high_inferior_step")
 
     if search_space.get("base"):
@@ -61,7 +62,7 @@ def validate_lognormal(search_space):
     search_space.setdefault("step", None)
     search_space.setdefault("base", 10)
 
-    with np.errstate(divide='ignore'):  # Low can be 0
+    with np.errstate(divide="ignore"):  # Low can be 0
         search_space["low_log"] = logb(search_space["low"], search_space["base"])
     search_space["high_log"] = logb(search_space["high"], search_space["base"])
     search_space["mu_log"] = logb(search_space["mu"], search_space["base"])
