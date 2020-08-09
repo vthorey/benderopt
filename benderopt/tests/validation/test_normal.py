@@ -17,7 +17,7 @@ def test_normal_search_space_ok():
 
 
 def test_normal_search_space_not_dict():
-    search_space = [0.5, 1],
+    search_space = ([0.5, 1],)
 
     with pytest.raises(ValidationError):
         search_space = validate_normal(search_space)

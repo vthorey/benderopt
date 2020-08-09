@@ -24,7 +24,4 @@ probability_density_function = {
 }
 
 
-__all__ = [
-    "sample_generators",
-    "probability_density_function"
-]
+__all__ = ["sample_generators", "probability_density_function"]

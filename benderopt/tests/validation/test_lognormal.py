@@ -18,7 +18,7 @@ def test_lognormal_search_space_ok():
 
 
 def test_lognormal_search_space_not_dict():
-    search_space = [1e-5, 1e5],
+    search_space = ([1e-5, 1e5],)
 
     with pytest.raises(ValidationError):
         search_space = validate_lognormal(search_space)

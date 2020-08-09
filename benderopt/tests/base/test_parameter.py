@@ -16,11 +16,7 @@ def test_parameter_init():
 
 
 def test_parameter_from_dict():
-    data = {
-        "name": "alpha",
-        "category": "uniform",
-        "search_space": {"high": 5, "low": 0}
-    }
+    data = {"name": "alpha", "category": "uniform", "search_space": {"high": 5, "low": 0}}
     parameter = Parameter.from_dict(data)
     assert parameter.name == "alpha"
     assert parameter.category == "uniform"
@@ -37,19 +33,12 @@ def test_parameter_from_dict_bad_format():
 
 
 def test_parameter_from_dict_missing_key():
-    data = {
-        "name": "alpha",
-        "search_space": {"high": 5, "low": 0}
-    }
+    data = {"name": "alpha", "search_space": {"high": 5, "low": 0}}
     with pytest.raises(ValidationError):
         Parameter.from_dict(data)
 
 
 def test_parameter_from_dict_bad_category():
-    data = {
-        "name": "alpha",
-        "category": "lol",
-        "search_space": {"high": 5, "low": 0}
-    }
+    data = {"name": "alpha", "category": "lol", "search_space": {"high": 5, "low": 0}}
     with pytest.raises(ValidationError):
         Parameter.from_dict(data)

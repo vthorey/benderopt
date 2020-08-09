@@ -109,15 +109,19 @@ class OptimizationProblem:
           - vector y of corresponding losses
 
         """
-        data = [([parameter.numeric_transform(observation.sample[parameter.name])
-                  for parameter in self.sorted_parameters],
-                 observation.loss,
-                 observation.weight) for observation in self.observations]
+        data = [
+            (
+                [
+                    parameter.numeric_transform(observation.sample[parameter.name])
+                    for parameter in self.sorted_parameters
+                ],
+                observation.loss,
+                observation.weight,
+            )
+            for observation in self.observations
+        ]
         X, y, sample_weight = zip(*data)
-        data = {
-            "X": np.array(X),
-            "y": np.array(y),
-            "sample_weight": np.array(sample_weight)}
+        data = {"X": np.array(X), "y": np.array(y), "sample_weight": np.array(sample_weight)}
         return data
 
     @property
@@ -131,8 +135,9 @@ class OptimizationProblem:
     @property
     def sorted_observations(self):
         """Observations ordered by increasing loss"""
-        if (not hasattr(self, "_sorted_observations") or
-                len(self._sorted_observations) != len(self.observations)):
+        if not hasattr(self, "_sorted_observations") or len(self._sorted_observations) != len(
+            self.observations
+        ):
             self._sorted_observations = sorted(self.observations, key=lambda x: x.loss)
         return self._sorted_observations
 
@@ -166,32 +171,39 @@ class OptimizationProblem:
         observations_low, observations_high = None, None
         if subsampling is None:
             size = int(self.number_of_observations * quantile)
-            observations_low, observations_high = (self.sorted_observations[:size],
-                                                   self.sorted_observations[size:])
+            observations_low, observations_high = (
+                self.sorted_observations[:size],
+                self.sorted_observations[size:],
+            )
         else:
             if subsampling_type == "random":
                 if self.number_of_observations > 0:
                     observations = np.array(self.observations)[
-                        np.random.choice(self.number_of_observations,
-                                         size=subsampling,
-                                         replace=False)]
+                        np.random.choice(
+                            self.number_of_observations, size=subsampling, replace=False
+                        )
+                    ]
                 else:
                     observations = []
                 sorted_observations = sorted(observations, key=lambda x: x.loss)
             elif subsampling_type == "best":
                 sorted_observations = self.sorted_observations[:subsampling]
             else:
-                raise NotImplementedError("subsampling method {} does not exist!".format(
-                    subsampling_type))
+                raise NotImplementedError(
+                    "subsampling method {} does not exist!".format(subsampling_type)
+                )
             size = int(len(sorted_observations) * quantile)
-            observations_low, observations_high = (sorted_observations[:size],
-                                                   sorted_observations[size:])
+            observations_low, observations_high = (
+                sorted_observations[:size],
+                sorted_observations[size:],
+            )
         return observations_low, observations_high
 
     def find_observations(self, sample):
         """Find corresponding observation."""
         observations = [
-            observation for observation in self.observations if observation.sample == sample]
+            observation for observation in self.observations if observation.sample == sample
+        ]
         return observations
 
     def get_best_k_samples(self, k):
@@ -223,15 +235,15 @@ class OptimizationProblem:
         if observation.parameters_name != self.parameters_name:
             valid = False
             reason = "observation parameters {} != optimization_problem parameters {}".format(
-                observation.parameters_name,
-                self.parameters_name)
+                observation.parameters_name, self.parameters_name
+            )
         else:
             for parameter in self.parameters:
                 if not parameter.check_value(observation.sample[parameter.name]):
                     valid = False
                     reason = "Invalid parameter {} with value {}".format(
-                        parameter.name,
-                        observation.sample[parameter.name])
+                        parameter.name, observation.sample[parameter.name]
+                    )
                     break
         return valid, reason
 
@@ -252,5 +264,6 @@ class OptimizationProblem:
         optimization_problem = cls.from_list(data["parameters"])
         if data.get("observations") is not None:
             optimization_problem.add_observations_from_list(
-                data["observations"], raise_exception=True)
+                data["observations"], raise_exception=True
+            )
         return optimization_problem

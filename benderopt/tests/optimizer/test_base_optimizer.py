@@ -6,14 +6,7 @@ import numpy as np
 def test_base_optimize_ok():
 
     optimization_problem = [
-        {
-            "name": "x",
-            "category": "uniform",
-            "search_space": {
-                "low": 0,
-                "high": np.pi,
-            }
-        }
+        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": np.pi,}}
     ]
 
     optimization_problem = OptimizationProblem.from_list(optimization_problem)

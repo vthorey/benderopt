@@ -9,10 +9,7 @@ def test_parameter_init():
 
 
 def test_parameter_from_dict():
-    data = {
-        "sample": {"alpha": 2},
-        "loss": 0.8
-    }
+    data = {"sample": {"alpha": 2}, "loss": 0.8}
     observation = Observation.from_dict(data)
     assert observation.parameters_name == set(["alpha"])
 
@@ -31,9 +28,7 @@ def test_parameter_from_dict_missing_loss():
 
 
 def test_parameter_from_dict_missing_sample():
-    data = {
-        "loss": 0.8
-    }
+    data = {"loss": 0.8}
     with pytest.raises(ValidationError):
         Observation.from_dict(data)
 

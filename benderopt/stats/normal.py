@@ -2,13 +2,9 @@ import numpy as np
 from scipy import stats
 
 
-def generate_samples_normal(mu,
-                            sigma,
-                            low,
-                            high,
-                            step,
-                            size=1,
-                            ):
+def generate_samples_normal(
+    mu, sigma, low, high, step, size=1,
+):
     """Generate sample for (truncated)(discrete)normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
@@ -23,12 +19,9 @@ def generate_samples_normal(mu,
     return samples
 
 
-def normal_cdf(samples,
-               mu,
-               sigma,
-               low,
-               high,
-               ):
+def normal_cdf(
+    samples, mu, sigma, low, high,
+):
     """Evaluate (truncated)normal cumulated density function for each samples.
 
     From scipy:
@@ -43,12 +36,7 @@ def normal_cdf(samples,
     return values
 
 
-def normal_pdf(samples,
-               mu,
-               sigma,
-               low,
-               high,
-               step):
+def normal_pdf(samples, mu, sigma, low, high, step):
     """Evaluate (truncated)(discrete)normal probability density function for each sample."""
     values = None
     if step is None:
@@ -56,8 +44,9 @@ def normal_pdf(samples,
         values = stats.truncnorm.pdf(samples, a=a, b=b, loc=mu, scale=sigma)
 
     else:
-        values = (normal_cdf(samples + step / 2, mu=mu, sigma=sigma, low=low, high=high) -
-                  normal_cdf(samples - step / 2, mu=mu, sigma=sigma, low=low, high=high))
+        values = normal_cdf(
+            samples + step / 2, mu=mu, sigma=sigma, low=low, high=high
+        ) - normal_cdf(samples - step / 2, mu=mu, sigma=sigma, low=low, high=high)
 
     values[(samples < low) + (samples >= high)] = 0
     return values

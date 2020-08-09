@@ -4,9 +4,7 @@ from numpy import random
 
 def generate_samples_uniform(low, high, step, size=1):
     """Generate sample for (discrete)uniform density."""
-    samples = random.uniform(low=low,
-                             high=high,
-                             size=size)
+    samples = random.uniform(low=low, high=high, size=size)
     if step:
         samples = step * np.floor((samples - low) / step) + low
     return samples

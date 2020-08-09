@@ -19,13 +19,9 @@ def test_loguniform_generator():
     low_log = logb(low, base)
     high_log = logb(high, base)
 
-    samples = sample_generators["loguniform"](size=size,
-                                              low=low,
-                                              high=high,
-                                              low_log=low_log,
-                                              high_log=high_log,
-                                              step=step,
-                                              base=base)
+    samples = sample_generators["loguniform"](
+        size=size, low=low, high=high, low_log=low_log, high_log=high_log, step=step, base=base
+    )
     # Median
     theorical_median = base ** (0.5 * (logb(high, base) + logb(low, base)))
     assert np.abs(np.median(samples) - theorical_median) / theorical_median < epsilon
@@ -48,13 +44,9 @@ def test_loguniform_step_generator():
     low_log = logb(low, base)
     high_log = logb(high, base)
 
-    samples = sample_generators["loguniform"](size=size,
-                                              low=low,
-                                              high=high,
-                                              low_log=low_log,
-                                              high_log=high_log,
-                                              step=step,
-                                              base=base)
+    samples = sample_generators["loguniform"](
+        size=size, low=low, high=high, low_log=low_log, high_log=high_log, step=step, base=base
+    )
     assert np.sum(samples % step) == 0
     assert np.sum(samples < low) == 0
     assert np.sum(samples >= high) == 0
@@ -74,17 +66,19 @@ def test_loguniform_pdf():
     low_log = logb(low, base)
     high_log = logb(high, base)
 
-    samples = sample_generators["loguniform"](size=size,
-                                              low=low,
-                                              high=high,
-                                              low_log=low_log,
-                                              high_log=high_log,
-                                              step=step,
-                                              base=base)
+    samples = sample_generators["loguniform"](
+        size=size, low=low, high=high, low_log=low_log, high_log=high_log, step=step, base=base
+    )
     hist, bin_edges = np.histogram(samples, bins=bins, density=True)
     densities = probability_density_function["loguniform"](
-        samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5, low_log=low_log, high_log=high_log,
-        low=low, high=high, step=step, base=base)
+        samples=(bin_edges[1:] + bin_edges[:-1]) * 0.5,
+        low_log=low_log,
+        high_log=high_log,
+        low=low,
+        high=high,
+        step=step,
+        base=base,
+    )
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert ((hist - densities) / densities).mean() <= epsilon
@@ -102,20 +96,22 @@ def test_loguniform_step_pdf():
     low_log = logb(low, base)
     high_log = logb(high, base)
 
-    samples = sample_generators["loguniform"](size=size,
-                                              low=low,
-                                              high=high,
-                                              low_log=low_log,
-                                              high_log=high_log,
-                                              step=step,
-                                              base=base)
+    samples = sample_generators["loguniform"](
+        size=size, low=low, high=high, low_log=low_log, high_log=high_log, step=step, base=base
+    )
 
-    hist, bin_edges = np.histogram(samples,
-                                   bins=np.arange(low - step / 10, high, step),
-                                   density=True)
+    hist, bin_edges = np.histogram(
+        samples, bins=np.arange(low - step / 10, high, step), density=True
+    )
     densities = probability_density_function["loguniform"](
-        samples=bin_edges[0:-1] + step / 10, low_log=low_log, high_log=high_log,
-        low=low, high=high, step=step, base=base)
+        samples=bin_edges[0:-1] + step / 10,
+        low_log=low_log,
+        high_log=high_log,
+        low=low,
+        high=high,
+        step=step,
+        base=base,
+    )
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert np.sum(densities[(bin_edges[1:] + bin_edges[:-1]) * 0.5 < low]) == 0
     assert ((hist - densities) / densities).mean() <= epsilon

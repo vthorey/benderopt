@@ -3,13 +3,14 @@ from benderopt.base import OptimizationProblem, Observation
 import numpy as np
 
 
-def minimize(f,
-             optimization_problem,
-             optimizer_type="parzen_estimator",
-             number_of_evaluation=100,
-             seed=None,
-             debug=False,
-             ):
+def minimize(
+    f,
+    optimization_problem,
+    optimizer_type="parzen_estimator",
+    number_of_evaluation=100,
+    seed=None,
+    debug=False,
+):
 
     np.random.seed(seed=seed)
 
@@ -27,18 +28,12 @@ def minimize(f,
 
 
 if __name__ == "__main__":
+
     def f(x):
         return np.sin(x)
 
     optimization_problem_parameters = [
-        {
-            "name": "x",
-            "category": "uniform",
-            "search_space": {
-                "low": 0,
-                "high": 2 * np.pi,
-            }
-        }
+        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": 2 * np.pi,}}
     ]
     optimization_problem = OptimizationProblem.from_list(optimization_problem_parameters)
 
