@@ -39,6 +39,9 @@ Here is a minimal example.
 ```
 from benderopt import minimize
 import numpy as np
+import logging
+
+logging.basicConfig(level=logging.DEBUG) # logging.INFO will print less information
 
 # We want to minimize the sinus function between 0 and 2pi
 def f(x):
