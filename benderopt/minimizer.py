@@ -1,7 +1,7 @@
 from benderopt.optimizer import optimizers
 from benderopt.base import OptimizationProblem, Observation
 import numpy as np
-
+import logging
 
 def minimize(
     f,
@@ -11,16 +11,19 @@ def minimize(
     seed=None,
     debug=False,
 ):
+    logger = logging.getLogger("benderopt")
 
     np.random.seed(seed=seed)
 
     samples = []
     optimization_problem = OptimizationProblem.from_list(optimization_problem_parameters)
     optimizer = optimizers[optimizer_type](optimization_problem)
-    for _ in range(number_of_evaluation):
+    for i in range(number_of_evaluation):
+        logger.info("Evaluating {0}/{1}...".format(i + 1, number_of_evaluation))
         sample = optimizer.suggest()
         samples.append(sample)
         loss = f(**sample)
+        logger.debug("f={0} for optimizer suggestion: {1}.".format(loss, sample))
         observation = Observation.from_dict({"loss": loss, "sample": sample})
         optimization_problem.add_observation(observation)
     if debug is True:
