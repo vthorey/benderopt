@@ -5,7 +5,7 @@ import numpy as np
 
 def minimize(
     f,
-    optimization_problem,
+    optimization_problem_parameters,
     optimizer_type="parzen_estimator",
     number_of_evaluation=100,
     seed=None,
@@ -15,6 +15,7 @@ def minimize(
     np.random.seed(seed=seed)
 
     samples = []
+    optimization_problem = OptimizationProblem.from_list(optimization_problem_parameters)
     optimizer = optimizers[optimizer_type](optimization_problem)
     for _ in range(number_of_evaluation):
         sample = optimizer.suggest()
@@ -33,10 +34,10 @@ if __name__ == "__main__":
         return np.sin(x)
 
     optimization_problem_parameters = [
-        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": 2 * np.pi,}}
+        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": 2 * np.pi, }}
     ]
-    optimization_problem = OptimizationProblem.from_list(optimization_problem_parameters)
 
-    best_sample = minimize(f, optimization_problem=optimization_problem, number_of_evaluation=100)
+    best_sample = minimize(
+        f, optimization_problem_parameters=optimization_problem_parameters, number_of_evaluation=100)
 
     print(best_sample["x"], 3 * np.pi / 2)
