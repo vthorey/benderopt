@@ -75,7 +75,7 @@ An optimization problem contains:
 - A list of parameters (i.e. parameters with their search space)
 - A list of observation (i.e. values for each parameter of the list and a corresponding loss)
 
-We use JSON representation for each of them e.g.
+We use JSON-like representation for each of them e.g.
 ```
 optimization_problem_data = {
     "parameters": [
