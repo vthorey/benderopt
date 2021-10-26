@@ -28,7 +28,6 @@ In Black box optimization, we have a function to optimize but cannot compute the
 Use case are:
 - Optimization of a machine learning model (number of layers of a neural network, function of activation, etc.
 - Business optimization (marketing campain, a/b testing)
-- Large scale clinical studies
 
 # Code Minimal Example
 
