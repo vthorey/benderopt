@@ -8,6 +8,13 @@ For asynchronous use, a web client using this library is available in open acces
 The algorithm implemented "parzen_estimator" is similar to TPE described in:
 [Bergstra, James S., et al. “Algorithms for hyper-parameter optimization.” Advances in Neural Information Processing Systems.](https://www.lri.fr/~kegl/research/PDFs/BeBaBeKe11.pdf)
 
+# Installation
+
+```
+pip install benderopt
+```
+or from the sources
+
 # Demo
 Here is a comparison on 200 evaluations of a function we want to minimize. First a random estimator is used to select random evaluation point. Then the parzen_estimator implemented in benderopt is used to select evaluation points.
 
