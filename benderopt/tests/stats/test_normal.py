@@ -3,8 +3,6 @@ from benderopt.stats import probability_density_function
 import numpy as np
 from scipy import stats
 
-np.random.seed(0)
-
 
 def test_normal_generator():
     """Test to reassure."""
