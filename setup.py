@@ -7,8 +7,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="benderopt",
-    # la version du code
-    version="1.3.2",
+    version="1.4.0",
     packages=[
         "benderopt",
         "benderopt.validation",
