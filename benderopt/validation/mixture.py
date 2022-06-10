@@ -5,6 +5,7 @@ from .loguniform import validate_loguniform, validate_loguniform_value
 from .normal import validate_normal, validate_normal_value
 from .lognormal import validate_lognormal, validate_lognormal_value
 from .utils import ValidationError, mandatory_key
+from ..rng import RNG
 
 
 validate_search_space = {
@@ -71,7 +72,7 @@ def validate_mixture(search_space):
     # Lazy test for summing to 1 (avoiding numerical rounding)
     if "weights" in search_space.keys():
         try:
-            np.random.choice(range(len(search_space["weights"])), p=search_space["weights"])
+            RNG.choice(range(len(search_space["weights"])), p=search_space["weights"])
         except ValueError:
             raise ValidationError(message_key="weights_sum")
 

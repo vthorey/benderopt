@@ -1,4 +1,3 @@
-import numpy as np
 from benderopt.minimizer import minimize
 from benderopt.optimizer.random import RandomOptimizer
 
@@ -75,14 +74,12 @@ best_sample = {
 
 
 def test_random_uniform():
-    np.random.seed(0)
     minimize(
         function_to_optimize, optimization_problem, optimizer_type="random", number_of_evaluation=5
     )
 
 
 def test_random_parzen_estimators():
-    np.random.seed(0)
     minimize(
         function_to_optimize,
         optimization_problem,

@@ -1,3 +1,4 @@
+from benderopt.rng import RNG
 from benderopt.validation.utils import ValidationError
 import json
 import numpy as np
@@ -179,7 +180,7 @@ class OptimizationProblem:
             if subsampling_type == "random":
                 if self.number_of_observations > 0:
                     observations = np.array(self.observations)[
-                        np.random.choice(
+                        RNG.choice(
                             self.number_of_observations, size=subsampling, replace=False
                         )
                     ]

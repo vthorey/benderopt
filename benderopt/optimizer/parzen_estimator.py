@@ -3,6 +3,7 @@ from ..base import Parameter
 from .optimizer import BaseOptimizer
 from benderopt.utils import logb
 from .random import RandomOptimizer
+from ..rng import RNG
 
 
 class ParzenEstimator(BaseOptimizer):
@@ -86,7 +87,7 @@ class ParzenEstimator(BaseOptimizer):
 
             # Sort candidate and choose best
             sorted_candidates = candidates[np.argsort(scores)][: int(self.number_of_candidates / 3)]
-            selected_candidates = np.random.choice(sorted_candidates, size=size, replace=False)
+            selected_candidates = RNG.choice(sorted_candidates, size=size, replace=False)
             for i in range(size):
                 samples[i][parameter.name] = selected_candidates[i]
         if debug:
