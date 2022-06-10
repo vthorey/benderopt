@@ -6,6 +6,7 @@ from ..base import Parameter
 from ..rng import RNG
 from .optimizer import BaseOptimizer
 from .random import RandomOptimizer
+from ..rng import RNG
 
 
 class ParzenEstimator(BaseOptimizer):
