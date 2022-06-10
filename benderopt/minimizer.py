@@ -3,6 +3,9 @@ from benderopt.base import OptimizationProblem, Observation
 import numpy as np
 import logging
 
+from benderopt.rng import RNG
+
+
 def minimize(
     f,
     optimization_problem_parameters,
@@ -13,7 +16,7 @@ def minimize(
 ):
     logger = logging.getLogger("benderopt")
 
-    np.random.seed(seed=seed)
+    RNG.seed(seed)
 
     samples = []
     optimization_problem = OptimizationProblem.from_list(optimization_problem_parameters)

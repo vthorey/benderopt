@@ -3,8 +3,6 @@ from benderopt.stats import probability_density_function
 from benderopt.utils import logb
 import numpy as np
 
-np.random.seed(0)
-
 
 def test_loguniform_generator():
 

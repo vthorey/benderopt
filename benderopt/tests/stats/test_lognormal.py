@@ -4,8 +4,6 @@ from benderopt.utils import logb
 import numpy as np
 from scipy import stats
 
-np.random.seed(0)
-
 
 def test_lognormal_generator():
     """Test to reassure."""
