@@ -1,12 +1,12 @@
 import numpy as np
-from numpy import random
 
+from benderopt.rng import RNG
 from benderopt.utils import logb
 
 
 def generate_samples_loguniform(low, low_log, high_log, step, base, size=1, **kwargs):
     """Generate sample for (discrete)uniform density."""
-    samples = base ** (random.uniform(low=low_log, high=high_log, size=size))
+    samples = base ** (RNG.uniform(low=low_log, high=high_log, size=size))
     if step:
         samples = step * np.floor((samples - low) / step) + low
     return samples

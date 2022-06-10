@@ -1,3 +1,5 @@
+import numpy as np
+
 from benderopt.minimizer import minimize
 from benderopt.optimizer.random import RandomOptimizer
 
@@ -90,3 +92,17 @@ def test_passing_optimizer_directly():
         optimizer_type=RandomOptimizer,
         number_of_evaluation=5,
     )
+
+
+def test_suggestions_with_global_seed_reset():
+    suggestions = []
+
+    def eval_(x: float) -> float:
+        suggestions.append(x)
+        np.random.seed(0)
+        return 1.0
+
+    params = [{"name": "x", "category": "uniform", "search_space": {"low": 0, "high": 1}}]
+    minimize(eval_, params, optimizer_type="parzen_estimator", number_of_evaluation=5)
+
+    assert len(suggestions) == len(set(suggestions))

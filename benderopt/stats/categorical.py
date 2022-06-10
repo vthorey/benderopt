@@ -1,10 +1,11 @@
 import numpy as np
-from numpy import random
+
+from benderopt.rng import RNG
 
 
 def generate_samples_categorical(values, probabilities, size=1):
     """Generate sample for categorical data with probability probabilities."""
-    return random.choice(values, p=probabilities, size=size)
+    return RNG.choice(values, p=probabilities, size=size)
 
 
 def categorical_pdf(samples, values, probabilities):
