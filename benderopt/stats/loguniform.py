@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import random
+
 from benderopt.utils import logb
 
 

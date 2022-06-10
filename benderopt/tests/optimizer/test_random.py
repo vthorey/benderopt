@@ -1,4 +1,5 @@
 import numpy as np
+
 from benderopt.minimizer import minimize
 
 
@@ -10,7 +11,7 @@ def f(x):
 def test_random_uniform():
 
     optimization_problem = [
-        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": np.pi,}}
+        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": np.pi}}
     ]
 
     best_sample = minimize(

@@ -1,10 +1,11 @@
-from numpy import random
 import numpy as np
-from .normal import generate_samples_normal, normal_pdf
-from .uniform import generate_samples_uniform, uniform_pdf
+from numpy import random
+
+from .categorical import categorical_pdf, generate_samples_categorical
 from .lognormal import generate_samples_lognormal, lognormal_pdf
 from .loguniform import generate_samples_loguniform, loguniform_pdf
-from .categorical import generate_samples_categorical, categorical_pdf
+from .normal import generate_samples_normal, normal_pdf
+from .uniform import generate_samples_uniform, uniform_pdf
 
 sample_generators_base = {
     "uniform": generate_samples_uniform,

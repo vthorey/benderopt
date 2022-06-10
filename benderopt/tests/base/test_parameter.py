@@ -1,7 +1,8 @@
-from benderopt.base import Parameter
-from benderopt.validation.utils import ValidationError
 import numpy as np
 import pytest
+
+from benderopt.base import Parameter
+from benderopt.validation.utils import ValidationError
 
 
 def test_parameter_init():

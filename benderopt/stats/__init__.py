@@ -1,9 +1,9 @@
-from .normal import generate_samples_normal, normal_pdf
-from .uniform import generate_samples_uniform, uniform_pdf
+from .categorical import categorical_pdf, generate_samples_categorical
 from .lognormal import generate_samples_lognormal, lognormal_pdf
 from .loguniform import generate_samples_loguniform, loguniform_pdf
-from .categorical import generate_samples_categorical, categorical_pdf
 from .mixture import generate_samples_mixture, mixture_pdf
+from .normal import generate_samples_normal, normal_pdf
+from .uniform import generate_samples_uniform, uniform_pdf
 
 sample_generators = {
     "uniform": generate_samples_uniform,

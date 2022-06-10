@@ -19,9 +19,7 @@ def generate_samples_lognormal(
     return samples
 
 
-def lognormal_cdf(
-    samples, mu_log, sigma_log, low, high, base,
-):
+def lognormal_cdf(samples, mu_log, sigma_log, low, high, base):
     """Evaluate (truncated)normal cumulated density function for each samples.
 
     https://onlinecourses.science.psu.edu/stat414/node/157
@@ -43,10 +41,7 @@ def lognormal_cdf(
     plt.show()
 
     """
-    parametrization = {
-        "s": sigma_log * np.log(base),
-        "scale": base ** mu_log,
-    }
+    parametrization = {"s": sigma_log * np.log(base), "scale": base**mu_log}
     cdf_low = stats.lognorm.cdf(low, **parametrization)
     cdf_high = stats.lognorm.cdf(high, **parametrization)
     values = (stats.lognorm.cdf(samples, **parametrization) - cdf_low) / (cdf_high - cdf_low)
@@ -59,10 +54,7 @@ def lognormal_pdf(samples, mu, mu_log, sigma, sigma_log, low, low_log, high, hig
     """Evaluate (truncated)(discrete)normal probability density function for each sample."""
     values = None
     if step is None:
-        parametrization = {
-            "s": sigma_log * np.log(base),
-            "scale": base ** mu_log,
-        }
+        parametrization = {"s": sigma_log * np.log(base), "scale": base**mu_log}
         cdf_low = stats.lognorm.cdf(low, **parametrization)
         cdf_high = stats.lognorm.cdf(high, **parametrization)
         values = stats.lognorm.pdf(samples, **parametrization) / (cdf_high - cdf_low)

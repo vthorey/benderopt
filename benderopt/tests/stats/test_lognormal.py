@@ -1,8 +1,8 @@
-from benderopt.stats import sample_generators
-from benderopt.stats import probability_density_function
-from benderopt.utils import logb
 import numpy as np
 from scipy import stats
+
+from benderopt.stats import probability_density_function, sample_generators
+from benderopt.utils import logb
 
 
 def test_lognormal_generator():
@@ -77,10 +77,10 @@ def test_lognormal_generator_step():
 
 
 def test_lognormal_pdf():
-    mu = 10 ** 3.34
-    sigma = 10 ** 2
-    low = 10 ** 1.125
-    high = 10 ** 4.365
+    mu = 10**3.34
+    sigma = 10**2
+    low = 10**1.125
+    high = 10**4.365
     step = None
     base = 10
 

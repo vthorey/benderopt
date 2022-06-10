@@ -1,10 +1,12 @@
-from benderopt.optimizer import optimizers
-from benderopt.base import OptimizationProblem, Observation
-import numpy as np
 import logging
 
-from benderopt.rng import RNG
+import numpy as np
+
+from benderopt.base import Observation, OptimizationProblem
+from benderopt.optimizer import optimizers
 from benderopt.optimizer.optimizer import BaseOptimizer
+from benderopt.rng import RNG
+
 
 def minimize(
     f,
@@ -24,7 +26,11 @@ def minimize(
     if isinstance(optimizer_type, str):
         optimizer_type = optimizers[optimizer_type]
     if not issubclass(optimizer_type, BaseOptimizer):
-        raise ValueError("optimizer_type should either be a string or a subclass of BaseOptimizer, got {}".format(optimizer_type))
+        raise ValueError(
+            "optimizer_type should either be a string or a subclass of BaseOptimizer, got {}".format(
+                optimizer_type
+            )
+        )
     optimizer = optimizer_type(optimization_problem)
 
     for i in range(number_of_evaluation):
@@ -46,10 +52,11 @@ if __name__ == "__main__":
         return np.sin(x)
 
     optimization_problem_parameters = [
-        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": 2 * np.pi, }}
+        {"name": "x", "category": "uniform", "search_space": {"low": 0, "high": 2 * np.pi}}
     ]
 
     best_sample = minimize(
-        f, optimization_problem_parameters=optimization_problem_parameters, number_of_evaluation=100)
+        f, optimization_problem_parameters=optimization_problem_parameters, number_of_evaluation=100
+    )
 
     print(best_sample["x"], 3 * np.pi / 2)

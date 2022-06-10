@@ -1,14 +1,11 @@
 import pytest
+
 from benderopt.validation.uniform import validate_uniform, validate_uniform_value
 from benderopt.validation.utils import ValidationError
 
 
 def test_uniform_search_space_ok():
-    search_space = {
-        "low": -5,
-        "high": 5,
-        "step": 0.1,
-    }
+    search_space = {"low": -5, "high": 5, "step": 0.1}
 
     search_space = validate_uniform(search_space)
 
@@ -21,48 +18,35 @@ def test_uniform_search_space_not_dict():
 
 
 def test_uniform_search_space_no_high():
-    search_space = {
-        "low": -5,
-    }
+    search_space = {"low": -5}
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
 def test_uniform_search_space_no_low():
-    search_space = {
-        "high": 5,
-    }
+    search_space = {"high": 5}
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
 def test_uniform_search_space_bad_high():
-    search_space = {
-        "low": [-5],
-        "high": 5,
-    }
+    search_space = {"low": [-5], "high": 5}
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
 def test_uniform_search_space_bad_low():
-    search_space = {
-        "low": -5,
-        "high": [5],
-    }
+    search_space = {"low": -5, "high": [5]}
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
 def test_uniform_search_space_bad_low_high():
-    search_space = {
-        "low": 6,
-        "high": 5,
-    }
+    search_space = {"low": 6, "high": 5}
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
@@ -74,21 +58,14 @@ def test_uniform_search_space_bad_step():
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
-    search_space = {
-        "low": 0,
-        "high": 5,
-        "step": 6,
-    }
+    search_space = {"low": 0, "high": 5, "step": 6}
 
     with pytest.raises(ValidationError):
         search_space = validate_uniform(search_space)
 
 
 def test_uniform_search_space_no_step():
-    search_space = {
-        "low": 0,
-        "high": 5,
-    }
+    search_space = {"low": 0, "high": 5}
 
     search_space = validate_uniform(search_space)
 
@@ -97,10 +74,7 @@ def test_uniform_search_space_no_step():
 
 
 def test_uniform_value():
-    search_space = {
-        "low": 0,
-        "high": 5,
-    }
+    search_space = {"low": 0, "high": 5}
 
     assert validate_uniform_value(0, **search_space) is True
     assert validate_uniform_value(5, **search_space) is False

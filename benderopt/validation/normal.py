@@ -1,4 +1,5 @@
 import numpy as np
+
 from benderopt.validation.utils import ValidationError
 
 

@@ -1,13 +1,15 @@
 import numpy as np
-from ..base import Parameter
-from .optimizer import BaseOptimizer
+
 from benderopt.utils import logb
-from .random import RandomOptimizer
+
+from ..base import Parameter
 from ..rng import RNG
+from .optimizer import BaseOptimizer
+from .random import RandomOptimizer
 
 
 class ParzenEstimator(BaseOptimizer):
-    """ Parzen Estimator
+    """Parzen Estimator
 
     This estimator is largely inspired from TPE and hyperopt.
     https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization.pdf
@@ -52,7 +54,7 @@ class ParzenEstimator(BaseOptimizer):
 
         # 0. Retrieve self.gamma % best observations (lowest loss) observations_l
         # and worst obervations (greatest loss g) observations_g
-        observations_l, observations_g = self.optimization_problem.observations_quantile(
+        (observations_l, observations_g) = self.optimization_problem.observations_quantile(
             self.gamma,
             subsampling=min(len(self.observations), self.subsampling),
             subsampling_type=self.subsampling_type,
@@ -150,7 +152,7 @@ def build_posterior_categorical(observed_values, observed_weights, parameter, pr
         {
             "name": parameter.name,
             "category": "categorical",
-            "search_space": {"values": values, "probabilities": list(posterior_probabilities),},
+            "search_space": {"values": values, "probabilities": list(posterior_probabilities)},
         }
     )
     return posterior_parameter
@@ -168,7 +170,7 @@ def find_sigmas_mus(observed_mus, prior_mu, prior_sigma, low, high):
     # when low and high are not defined we use inf to get the only available distance
     # (right neighbor for sigmas[0] and left for sigmas[-1])
     tmp = np.concatenate(
-        ([low if low != -np.inf else np.inf], mus, [high if high != np.inf else -np.inf],)
+        ([low if low != -np.inf else np.inf], mus, [high if high != np.inf else -np.inf])
     )
     sigmas = np.maximum(tmp[1:-1] - tmp[0:-2], tmp[2:] - tmp[1:-1])
 
@@ -246,8 +248,8 @@ def build_posterior_loguniform(observed_values, observed_weights, parameter, pri
     )
 
     # Back from log scale
-    mus = base ** mus_log
-    sigmas = base ** sigmas_log
+    mus = base**mus_log
+    sigmas = base**sigmas_log
 
     sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(
@@ -342,8 +344,8 @@ def build_posterior_lognormal(observed_values, observed_weights, parameter, prio
     )
 
     # Back from log scale
-    mus = base ** mus_log
-    sigmas = base ** sigmas_log
+    mus = base**mus_log
+    sigmas = base**sigmas_log
 
     sum_observed_weights = sum(observed_weights)
     posterior_parameter = Parameter.from_dict(

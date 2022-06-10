@@ -1,6 +1,8 @@
 import numpy as np
-from .utils import ValidationError
+
 from benderopt.utils import logb
+
+from .utils import ValidationError
 
 
 def validate_lognormal(search_space):
@@ -54,7 +56,7 @@ def validate_lognormal(search_space):
             raise ValidationError(message_key="high_inferior_step")
 
     if search_space.get("base"):
-        if type(search_space["base"]) not in (float, int,):
+        if type(search_space["base"]) not in (float, int):
             raise ValidationError(message_key="base_type")
         if search_space["base"] <= 0:
             raise ValidationError(message_key="base_inferior_0")

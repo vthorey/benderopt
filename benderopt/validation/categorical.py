@@ -1,6 +1,8 @@
-from benderopt.rng import RNG
-from .utils import ValidationError
 import numpy as np
+
+from benderopt.rng import RNG
+
+from .utils import ValidationError
 
 
 def validate_categorical(search_space):
@@ -26,9 +28,7 @@ def validate_categorical(search_space):
     # Lazy test for summing to 1 (avoiding numerical rounding)
     if "probabilities" in search_space.keys():
         try:
-            RNG.choice(
-                range(len(search_space["probabilities"])), p=search_space["probabilities"]
-            )
+            RNG.choice(range(len(search_space["probabilities"])), p=search_space["probabilities"])
         except ValueError:
             raise ValidationError(message_key="probabilities_sum")
 

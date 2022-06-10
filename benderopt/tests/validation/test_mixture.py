@@ -1,4 +1,5 @@
 import pytest
+
 from benderopt.validation.mixture import validate_mixture, validate_mixture_value
 from benderopt.validation.utils import ValidationError
 
@@ -9,7 +10,7 @@ def test_mixture_search_space_ok():
         "parameters": [
             {
                 "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",
@@ -61,7 +62,7 @@ def test_mixture_search_space_bad_parameters():
         "weights": [0.5, 0.5],
         "parameters": {
             "category": "normal",
-            "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+            "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
         },
     }
 
@@ -75,7 +76,7 @@ def test_mixture_search_space_missing_category():
         "parameters": [
             {
                 # "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,}
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1}
             },
             {
                 "category": "categorical",
@@ -94,7 +95,7 @@ def test_mixture_search_space_bad_category():
         "parameters": [
             {
                 "category": "lol",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",
@@ -154,7 +155,7 @@ def test_mixture_search_space_error_validation():
         "parameters": [
             {
                 "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": 50, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": 50, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",
@@ -173,7 +174,7 @@ def test_mixture_search_space_bad_weights():
         "parameters": [
             {
                 "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",
@@ -192,7 +193,7 @@ def test_mixture_search_space_bad_weights_size():
         "parameters": [
             {
                 "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",
@@ -211,7 +212,7 @@ def test_mixture_search_space_bad_weights_sum():
         "parameters": [
             {
                 "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",
@@ -229,7 +230,7 @@ def test_mixture_search_space_no_weights():
         "parameters": [
             {
                 "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",
@@ -249,7 +250,7 @@ def test_validate_mixture_value():
         "parameters": [
             {
                 "category": "normal",
-                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1,},
+                "search_space": {"mu": 0.5, "sigma": 1, "low": -5, "high": 5, "step": 0.1},
             },
             {
                 "category": "categorical",

@@ -2,9 +2,7 @@ import numpy as np
 from scipy import stats
 
 
-def generate_samples_normal(
-    mu, sigma, low, high, step, size=1,
-):
+def generate_samples_normal(mu, sigma, low, high, step, size=1):
     """Generate sample for (truncated)(discrete)normal density."""
 
     # Draw a samples which fit between low and high (if they are given)
@@ -19,9 +17,7 @@ def generate_samples_normal(
     return samples
 
 
-def normal_cdf(
-    samples, mu, sigma, low, high,
-):
+def normal_cdf(samples, mu, sigma, low, high):
     """Evaluate (truncated)normal cumulated density function for each samples.
 
     From scipy:

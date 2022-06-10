@@ -1,4 +1,5 @@
 import pytest
+
 from benderopt.validation.categorical import validate_categorical, validate_categorical_value
 from benderopt.validation.utils import ValidationError
 
@@ -52,9 +53,7 @@ def test_categorical_search_space_wrong_probas():
 
 
 def test_categorical_search_space_no_probas():
-    search_space = {
-        "values": ["a", "b", "c"],
-    }
+    search_space = {"values": ["a", "b", "c"]}
 
     search_space = validate_categorical(search_space)
 
