@@ -23,4 +23,5 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=["numpy>=1.15.4", "scipy>=1.1.0", ],
+    extras_require={"test": ["pytest", "pytest-coverage"]},
 )
