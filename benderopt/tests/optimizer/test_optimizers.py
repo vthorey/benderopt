@@ -1,4 +1,5 @@
 from benderopt.minimizer import minimize
+from benderopt.optimizer.random import RandomOptimizer
 
 
 optimization_problem = [
@@ -84,4 +85,13 @@ def test_random_parzen_estimators():
         optimization_problem,
         optimizer_type="parzen_estimator",
         number_of_evaluation=35,
+    )
+
+def test_passing_optimizer_directly():
+    np.random.seed(0)
+    minimize(
+        function_to_optimize,
+        optimization_problem,
+        optimizer_type=RandomOptimizer,
+        number_of_evaluation=5,
     )
