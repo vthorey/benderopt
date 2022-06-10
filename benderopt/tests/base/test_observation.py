@@ -1,6 +1,7 @@
+import pytest
+
 from benderopt.base import Observation
 from benderopt.validation.utils import ValidationError
-import pytest
 
 
 def test_parameter_init():
@@ -20,9 +21,7 @@ def test_parameter_bad_sample_format():
 
 
 def test_parameter_from_dict_missing_loss():
-    data = {
-        "sample": {"alpha": 2},
-    }
+    data = {"sample": {"alpha": 2}}
     with pytest.raises(ValidationError):
         Observation.from_dict(data)
 
@@ -34,9 +33,6 @@ def test_parameter_from_dict_missing_sample():
 
 
 def test_parameter_from_dict_bad_sample():
-    data = {
-        "loss": 0.8,
-        "sample": [2],
-    }
+    data = {"loss": 0.8, "sample": [2]}
     with pytest.raises(ValidationError):
         Observation.from_dict(data)

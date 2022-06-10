@@ -1,9 +1,9 @@
 from .categorical import validate_categorical, validate_categorical_value
-from .uniform import validate_uniform, validate_uniform_value
-from .loguniform import validate_loguniform, validate_loguniform_value
-from .normal import validate_normal, validate_normal_value
 from .lognormal import validate_lognormal, validate_lognormal_value
+from .loguniform import validate_loguniform, validate_loguniform_value
 from .mixture import validate_mixture
+from .normal import validate_normal, validate_normal_value
+from .uniform import validate_uniform, validate_uniform_value
 
 validate_search_space = {
     "categorical": validate_categorical,

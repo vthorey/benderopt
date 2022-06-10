@@ -1,5 +1,5 @@
+from benderopt.stats import probability_density_function, sample_generators
 from benderopt.validation import is_parameter_value_valid, validate_search_space
-from benderopt.stats import sample_generators, probability_density_function
 from benderopt.validation.utils import ValidationError
 
 

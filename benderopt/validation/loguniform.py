@@ -1,5 +1,7 @@
 import numpy as np
+
 from benderopt.utils import logb
+
 from .utils import ValidationError
 
 
@@ -36,7 +38,7 @@ def validate_loguniform(search_space):
         ):
             raise ValidationError(message_key="high_inferior_step")
 
-    if search_space.get("base") and type(search_space.get("base")) not in (float, int,):
+    if search_space.get("base") and type(search_space.get("base")) not in (float, int):
         raise ValidationError(message_key="base_type")
 
     search_space.setdefault("step", None)

@@ -1,7 +1,8 @@
-from benderopt.base import OptimizationProblem, Parameter, Observation
+import pytest
+
+from benderopt.base import Observation, OptimizationProblem, Parameter
 from benderopt.utils import get_test_optimization_problem
 from benderopt.validation.utils import ValidationError
-import pytest
 
 
 def test_optimization_problem():

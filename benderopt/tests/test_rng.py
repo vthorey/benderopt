@@ -1,12 +1,14 @@
-from benderopt.rng import RNG
 import numpy as np
 
+from benderopt.rng import RNG
 
 HIGH = 1e10
+
 
 def test_seed():
     RNG.seed(42)
     assert RNG.integers(HIGH) == 7739560485
+
 
 def test_separate_rng_seed():
     np.random.seed(0)

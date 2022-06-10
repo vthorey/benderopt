@@ -1,8 +1,10 @@
 from itertools import product
-from joblib import Parallel, delayed
-from benderopt import minimize
+
 import numpy as np
 import tqdm
+from joblib import Parallel, delayed
+
+from benderopt import minimize
 
 
 def benchmark_simple(
@@ -53,7 +55,7 @@ def benchmark_simple(
         )
 
     results = {
-        method: {n: {"mean": np.mean(values), "std": np.std(values),} for n, values in ns.items()}
+        method: {n: {"mean": np.mean(values), "std": np.std(values)} for n, values in ns.items()}
         for method, ns in results_tmp.items()
     }
     return results
@@ -102,7 +104,7 @@ def benchmark_value(
         )
 
     results = {
-        method: {n: {"mean": np.mean(values), "std": np.std(values),} for n, values in ns.items()}
+        method: {n: {"mean": np.mean(values), "std": np.std(values)} for n, values in ns.items()}
         for method, ns in results_tmp.items()
     }
     return results

@@ -1,34 +1,31 @@
+import numpy as np
+
 from benderopt.minimizer import minimize
 from benderopt.optimizer.random import RandomOptimizer
 
-
 optimization_problem = [
-    {"name": "x1", "category": "uniform", "search_space": {"low": 0, "high": 10,}},
+    {"name": "x1", "category": "uniform", "search_space": {"low": 0, "high": 10}},
     {"name": "x1_step", "category": "uniform", "search_space": {"low": 0, "high": 10, "step": 1}},
-    {
-        "name": "x2",
-        "category": "loguniform",
-        "search_space": {"low": 1e4, "high": 1e6, "base": 10,},
-    },
+    {"name": "x2", "category": "loguniform", "search_space": {"low": 1e4, "high": 1e6, "base": 10}},
     {
         "name": "x2_step",
         "category": "loguniform",
-        "search_space": {"low": 1e4, "high": 1e6, "step": 1e3, "base": 10,},
+        "search_space": {"low": 1e4, "high": 1e6, "step": 1e3, "base": 10},
     },
     {
         "name": "x3",
         "category": "normal",
-        "search_space": {"mu": 8, "sigma": 4, "low": 0, "high": 10,},
+        "search_space": {"mu": 8, "sigma": 4, "low": 0, "high": 10},
     },
     {
         "name": "x3_step",
         "category": "normal",
-        "search_space": {"mu": 8, "sigma": 4, "low": 0, "high": 10, "step": 0.2,},
+        "search_space": {"mu": 8, "sigma": 4, "low": 0, "high": 10, "step": 0.2},
     },
     {
         "name": "x4",
         "category": "lognormal",
-        "search_space": {"mu": 1e-5, "sigma": 1e1, "low": 1e-7, "high": 1e-3, "base": 10,},
+        "search_space": {"mu": 1e-5, "sigma": 1e1, "low": 1e-7, "high": 1e-3, "base": 10},
     },
     {
         "name": "x4_step",
@@ -42,7 +39,7 @@ optimization_problem = [
             "base": 10,
         },
     },
-    {"name": "x5", "category": "categorical", "search_space": {"values": ["a", "b", "c", "d"],}},
+    {"name": "x5", "category": "categorical", "search_space": {"values": ["a", "b", "c", "d"]}},
 ]
 
 
@@ -87,11 +84,25 @@ def test_random_parzen_estimators():
         number_of_evaluation=35,
     )
 
+
 def test_passing_optimizer_directly():
-    np.random.seed(0)
     minimize(
         function_to_optimize,
         optimization_problem,
         optimizer_type=RandomOptimizer,
         number_of_evaluation=5,
     )
+
+
+def test_suggestions_with_global_seed_reset():
+    suggestions = []
+
+    def eval_(x: float) -> float:
+        suggestions.append(x)
+        np.random.seed(0)
+        return 1.0
+
+    params = [{"name": "x", "category": "uniform", "search_space": {"low": 0, "high": 1}}]
+    minimize(eval_, params, optimizer_type="parzen_estimator", number_of_evaluation=5)
+
+    assert len(suggestions) == len(set(suggestions))

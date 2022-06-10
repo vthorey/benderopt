@@ -1,6 +1,6 @@
-from benderopt.stats import sample_generators
-from benderopt.stats import probability_density_function
 import numpy as np
+
+from benderopt.stats import probability_density_function, sample_generators
 
 
 def test_lognormal_generator():
@@ -8,8 +8,8 @@ def test_lognormal_generator():
     search_space = {
         "weights": [0.25, 0.75],
         "parameters": [
-            {"category": "uniform", "search_space": {"low": -10, "high": -5, "step": None,}},
-            {"category": "uniform", "search_space": {"low": 0, "high": 15, "step": None,}},
+            {"category": "uniform", "search_space": {"low": -10, "high": -5, "step": None}},
+            {"category": "uniform", "search_space": {"low": 0, "high": 15, "step": None}},
         ],
     }
     size = 100000
@@ -38,8 +38,8 @@ def test_lognormal_pdf():
     search_space = {
         "weights": [0.25, 0.75],
         "parameters": [
-            {"category": "uniform", "search_space": {"low": -10, "high": -5, "step": None,}},
-            {"category": "uniform", "search_space": {"low": 0, "high": 15, "step": None,}},
+            {"category": "uniform", "search_space": {"low": -10, "high": -5, "step": None}},
+            {"category": "uniform", "search_space": {"low": 0, "high": 15, "step": None}},
         ],
     }
     epsilon = 1e-5

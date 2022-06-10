@@ -1,13 +1,13 @@
-from benderopt.stats import sample_generators
-from benderopt.stats import probability_density_function
-from benderopt.utils import logb
 import numpy as np
+
+from benderopt.stats import probability_density_function, sample_generators
+from benderopt.utils import logb
 
 
 def test_loguniform_generator():
 
-    low = 10 ** -7.23
-    high = 10 ** -6.569
+    low = 10**-7.23
+    high = 10**-6.569
     step = None
     base = 10
 
@@ -32,8 +32,8 @@ def test_loguniform_generator():
 
 def test_loguniform_step_generator():
 
-    low = 10 ** 2
-    high = 10 ** 4
+    low = 10**2
+    high = 10**4
     step = 2
     base = 10
 
@@ -52,8 +52,8 @@ def test_loguniform_step_generator():
 
 def test_loguniform_pdf():
 
-    low = 10 ** 1.125
-    high = 10 ** 4.365
+    low = 10**1.125
+    high = 10**4.365
     step = None
     base = 10
 
@@ -84,8 +84,8 @@ def test_loguniform_pdf():
 
 def test_loguniform_step_pdf():
 
-    low = 10 ** 0
-    high = 10 ** 3
+    low = 10**0
+    high = 10**3
     step = low
     base = 10
     size = 100000

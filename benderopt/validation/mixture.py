@@ -1,12 +1,12 @@
 import numpy as np
+
+from ..rng import RNG
 from .categorical import validate_categorical, validate_categorical_value
-from .uniform import validate_uniform, validate_uniform_value
+from .lognormal import validate_lognormal, validate_lognormal_value
 from .loguniform import validate_loguniform, validate_loguniform_value
 from .normal import validate_normal, validate_normal_value
-from .lognormal import validate_lognormal, validate_lognormal_value
+from .uniform import validate_uniform, validate_uniform_value
 from .utils import ValidationError, mandatory_key
-from ..rng import RNG
-
 
 validate_search_space = {
     "categorical": validate_categorical,

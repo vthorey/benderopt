@@ -1,13 +1,16 @@
+import json
+
+import numpy as np
+
+from benderopt.base.observation import Observation
+from benderopt.base.parameter import Parameter
 from benderopt.rng import RNG
 from benderopt.validation.utils import ValidationError
-import json
-import numpy as np
-from . import Observation, Parameter
 
 
 class OptimizationProblem:
 
-    """ OptimizationProblem
+    """OptimizationProblem
 
 
     - Parameters have a category which is "categorical", "uniform", "normal", "loguniform",
@@ -180,9 +183,7 @@ class OptimizationProblem:
             if subsampling_type == "random":
                 if self.number_of_observations > 0:
                     observations = np.array(self.observations)[
-                        RNG.choice(
-                            self.number_of_observations, size=subsampling, replace=False
-                        )
+                        RNG.choice(self.number_of_observations, size=subsampling, replace=False)
                     ]
                 else:
                     observations = []

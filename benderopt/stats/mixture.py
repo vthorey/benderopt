@@ -1,10 +1,12 @@
-from numpy import random
 import numpy as np
-from .normal import generate_samples_normal, normal_pdf
-from .uniform import generate_samples_uniform, uniform_pdf
+
+from benderopt.rng import RNG
+
+from .categorical import categorical_pdf, generate_samples_categorical
 from .lognormal import generate_samples_lognormal, lognormal_pdf
 from .loguniform import generate_samples_loguniform, loguniform_pdf
-from .categorical import generate_samples_categorical, categorical_pdf
+from .normal import generate_samples_normal, normal_pdf
+from .uniform import generate_samples_uniform, uniform_pdf
 
 sample_generators_base = {
     "uniform": generate_samples_uniform,
@@ -24,7 +26,7 @@ probability_density_function_base = {
 
 
 def generate_samples_mixture(parameters, weights, size):
-    selected_parameter = random.choice(range(len(parameters)), p=weights, size=size)
+    selected_parameter = RNG.choice(range(len(parameters)), p=weights, size=size)
     return np.concatenate(
         [
             sample_generators_base[parameter["category"]](

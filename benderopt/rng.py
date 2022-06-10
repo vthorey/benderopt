@@ -11,6 +11,7 @@ class ResetableRNG:
     def seed(self, seed=0):
         self._rng = np.random.default_rng(seed)
 
+
 RNG = ResetableRNG()
 
 __all__ = ["RNG"]
