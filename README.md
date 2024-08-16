@@ -3,6 +3,8 @@
 
 benderopt is a black box optimization library.
 
+GitHub repo: https://github.com/vthorey/benderopt/
+
 For asynchronous use, a web client using this library is available in open access at [bender.dreem.com](https://bender.dreem.com)
 
 The algorithm implemented "parzen_estimator" is similar to TPE described in:
